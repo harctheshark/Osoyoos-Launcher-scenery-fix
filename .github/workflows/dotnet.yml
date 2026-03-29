@@ -37,10 +37,10 @@ jobs:
       run: dotnet restore -r win-x64
     
     - name: Install Ninja
-      run: choco install ninja -y
+      run: choco install ninja -y --force
 
     - name: Install LLVM/Clang
-      run: choco install llvm -y
+      run: choco install llvm -y --force
 
     - name: Enable developer command prompt
       uses: ilammy/msvc-dev-cmd@v1

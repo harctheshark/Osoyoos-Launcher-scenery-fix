@@ -148,6 +148,6 @@
     <Exec Command="call &quot;$(DevEnvDir)..\Tools\VsDevCmd.bat&quot; &amp;&amp; editbin /HIGHENTROPYVA:NO /DYNAMICBASE:NO /REBASE:base=0x10000 &quot;$(TargetDir)$(TargetName).exe&quot;" />
   </Target>
   <Target Name="PostPublish" AfterTargets="Publish">
-    <Exec Command="call &quot;$(DevEnvDir)..\Tools\VsDevCmd.bat&quot; &amp;&amp; editbin /HIGHENTROPYVA:NO /DYNAMICBASE:NO /REBASE:base=0x10000 &quot;$(TargetDir)publish\$(TargetName).exe&quot;" />
+    <Exec Command="call &quot;$(DevEnvDir)..\Tools\VsDevCmd.bat&quot; &amp;&amp; editbin /HIGHENTROPYVA:NO /DYNAMICBASE:NO /REBASE:base=0x10000 &quot;$(PublishDir)$(TargetName).exe&quot;" />
   </Target>
 </Project>

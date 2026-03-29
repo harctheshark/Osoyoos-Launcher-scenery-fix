@@ -26,7 +26,7 @@ jobs:
       with:
         dotnet-version: '10.x'
     - name: Install dependencies
-      run: dotnet restore 'win-x64'
+      run: dotnet restore
     - name: Enable developer command prompt
       uses: ilammy/msvc-dev-cmd@v1
     - name: Build native binaries (ToolHooks)

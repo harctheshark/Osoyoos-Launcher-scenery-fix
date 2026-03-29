@@ -200,9 +200,9 @@ private:
 };
 
 template<typename T>
-inline static std::unique_ptr<PatternEntryBytes<sizeof(T)>> pattern_entry_bytes_from_pod(const T value)
+inline static std::unique_ptr<PatternEntryBytes<sizeof(T)>> pattern_entry_bytes_from_value(const T value)
 {
-	static_assert(std::is_pod_v<T>);
+	static_assert(std::is_trivially_copyable_v<T>);
 
 	std::array<uint8_t, sizeof(T)> pattern_as_array;
 	std::memcpy(pattern_as_array.data(), &value, sizeof(T));
@@ -286,8 +286,8 @@ private:
 	PAT_UNI(PatternEntryCall, call_target)
 #define PAT_STRING_XREF(string) \
 	PAT_UNI(PatternEntryStringXREF, string)
-#define PAT_POD_TYPE(pod) \
-	pattern_entry_bytes_from_pod(pod)
+#define PAT_VALUE_TYPE(value) \
+	pattern_entry_bytes_from_value(value)
 #define PAT_INTEGER_RANGE(type, lower, upper) \
 	PAT_UNI(PatternEntryIntegerRange<type>, lower, upper)
 

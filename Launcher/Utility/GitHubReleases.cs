@@ -44,7 +44,7 @@ namespace ToolkitLauncher.Utility
                         Size: releaseAsset.Size
                         ));
                 releases.Add(new Release(
-                    ID: release.Id,
+                    ID: (int)release.Id,
                     NodeID: release.NodeId,
                     Name: release.Name,
                     Description: release.Body,

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <AssemblyName>Osoyoos</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -19,9 +19,11 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
-	<Platforms>AnyCPU;x64;x86</Platforms>
+    <Platforms>x64</Platforms>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -79,27 +81,21 @@
     <EmbeddedResource Include="Documentation.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.269">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.119">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Octokit" Version="4.0.3" />
+    <PackageReference Include="Octokit" Version="14.0.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.Management" Version="7.0.0" />
+    <PackageReference Include="System.Management" Version="10.0.5" />
     <PackageReference Include="TlshSharp" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ManagedBlamHelper\ManagedBlamHelper.csproj" />
   </ItemGroup>
   <ItemGroup Condition="'$(BuildingInsideVisualStudio)' == true">
-      <ProjectReference Include="..\H2ToolHooks\H2ToolHooks.vcxproj" />
-      <ProjectReference Include="..\GetProcAddrHelper\GetProcAddrHelper.vcxproj" />
+    <ProjectReference Include="..\H2ToolHooks\H2ToolHooks.vcxproj" />
+    <ProjectReference Include="..\GetProcAddrHelper\GetProcAddrHelper.vcxproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Credits.xaml.cs">

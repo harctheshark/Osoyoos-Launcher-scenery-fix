@@ -1,0 +1,17 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="GetProcAddrHelper/GetProcAddrHelper.vcxproj" Id="8bab0404-c2f9-41de-a96f-0e19e2bcfbaf">
+    <Platform Project="Win32" />
+  </Project>
+  <Project Path="H2ToolHooks/H2ToolHooks.vcxproj" Id="9e3d9759-c348-4558-abd7-41c5342c08b4">
+    <Platform Project="Win32" />
+  </Project>
+  <Project Path="Launcher/ToolkitLauncher.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="ManagedBlamHelper/ManagedBlamHelper.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

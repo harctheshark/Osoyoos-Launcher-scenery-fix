@@ -108,13 +108,13 @@ static bool patch_lightmap_quality(const PatternScanner &scanner)
 	DebugPrintf("Patching lightmap quality");
 	std::array<pattern_entry, 8> cuban_lightmap_setting = {
 		PAT_STRING_XREF("cuban"),
-		PAT_POD_TYPE(int32_t(1)), // subpixel count
-		PAT_POD_TYPE(int32_t(1)), // monte carlo sample count
-		PAT_POD_TYPE(int32_t(0)), // is_draft
-		PAT_POD_TYPE(int32_t(50000)), // photon count
-		PAT_POD_TYPE(int32_t(0)), // unknown
-		PAT_POD_TYPE(float(1.0f)), // search distance setting
-		PAT_POD_TYPE(int32_t(0)) // is checkboard
+		PAT_VALUE_TYPE(int32_t(1)), // subpixel count
+		PAT_VALUE_TYPE(int32_t(1)), // monte carlo sample count
+		PAT_VALUE_TYPE(int32_t(0)), // is_draft
+		PAT_VALUE_TYPE(int32_t(50000)), // photon count
+		PAT_VALUE_TYPE(int32_t(0)), // unknown
+		PAT_VALUE_TYPE(float(1.0f)), // search distance setting
+		PAT_VALUE_TYPE(int32_t(0)) // is checkboard
 	};
 
 	auto cuban_match = scanner.find_pattern_in_rdata(cuban_lightmap_setting);

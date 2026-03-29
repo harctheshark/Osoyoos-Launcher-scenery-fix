@@ -1,6 +1,6 @@
 # Osoyoos Launcher
 
-[![.NET](https://github.com/num0005/Osoyoos-Launcher/actions/workflows/dotnet.yml/badge.svg)](https://github.com/num0005/Osoyoos-Launcher/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/MtnDewIt/Osoyoos-Launcher/actions/workflows/dotnet.yml/badge.svg)](https://github.com/MtnDewIt/Osoyoos-Launcher/actions/workflows/dotnet.yml)
 
 ## Launcher Description
 The Osoyoos launcher is an application that can be used to easily interact with various HEK toolsets from a simple GUI. Profiles can be created to run released or community modified toolsets.
@@ -38,7 +38,7 @@ Launcher can do the following:
 
 ## Usage
 
-0. Download and install the latest [.NET 8 Desktop Runtime x64](https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe").
+0. Download and install the latest [.NET 10 Desktop Runtime x64](https://aka.ms/dotnet/10.0/windowsdesktop-runtime-win-x64.exe").
 1. Download and run the launcher executable [from Github releases](https://github.com/num0005/Osoyoos-Launcher/releases).
 2. Use the setup dialog and/or profile wizard to setup the paths for all toolkits you wish to use.
 

@@ -34,9 +34,9 @@ jobs:
     - name: Build native binaries (GetProcAddrHelper)
       run: msbuild ToolkitLauncher.slnx -target:GetProcAddrHelper -property:Configuration=Release -maxCpuCount
     - name: Build
-      run: dotnet build .\Launcher\ToolkitLauncher.csproj --configuration Release
+      run: dotnet build .\Launcher\ToolkitLauncher.csproj --configuration Release -r win-x64
     - name: Test
-      run: dotnet test .\Launcher\ToolkitLauncher.csproj --verbosity normal
+      run: dotnet test .\Launcher\ToolkitLauncher.csproj --verbosity normal -r win-x64
     - name: Publish
       run: dotnet publish .\Launcher\ToolkitLauncher.csproj -c Release -r win-x64 -P:PublishSingleFile=true -p:PublishTrimmed=false --self-contained false
     - name: Upload artifact

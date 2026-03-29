@@ -6,6 +6,7 @@
 *.zip
 *.exe
 *.dll
+*.lib
 !/OsoyoosMB/ref/ManagedBlam.dll
 !/ref/*
 !/packages/Resource.Embedder.2.1.1/tasks/net46/*.dll
@@ -19,3 +20,4 @@ GetProcAddrHelper/Debug/*
 GetProcAddrHelper/Release/*
 /Debug/*
 /Release/*
+/Build/*

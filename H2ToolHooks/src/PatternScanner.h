@@ -18,13 +18,14 @@ inline static uint32_t get_function_address_from_call(uint32_t call) {
 
 
 #define PAT_UNI(type, ...) \
-	std::make_unique<type>(type(##__VA_ARGS__))
+	std::make_unique<type>(type(__VA_ARGS__))
 
 class PatternScanner;
 
 class PatternEntryBase
 {
 public:
+	virtual ~PatternEntryBase() = default;
 	virtual size_t entry_size() const = 0;
 	virtual bool matches(const PatternScanner& scanner, const uint8_t* data) const = 0;
 	virtual size_t size_required() const {

@@ -65,23 +65,15 @@
     <EmbeddedResource Include="Resources\LicenseInfoFull.txt" />
   </ItemGroup>
   <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="BultinProfiles.json" />
     <EmbeddedResource Include="Documentation.json" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.269">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -92,10 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ManagedBlamHelper\ManagedBlamHelper.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' == true">
-    <ProjectReference Include="..\H2ToolHooks\H2ToolHooks.vcxproj" />
-    <ProjectReference Include="..\GetProcAddrHelper\GetProcAddrHelper.vcxproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Credits.xaml.cs">
@@ -144,6 +132,23 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+
+  <Target Name="BuildDependencies" BeforeTargets="BeforeBuild">
+    <Message Text="Refeshing CMake Configuration for Osoyoos Dependencies..." Importance="high" />
+    <Exec WorkingDirectory=".." Command="cmake --preset $(ConfigurationName)" />
+    <Message Text="Building Osoyoos Dependencies..." Importance="high" />
+    <Exec WorkingDirectory=".." Command="cmake --build --preset $(ConfigurationName)" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <H2ToolHooks Include="..\H2ToolHooks\bin\x86\$(ConfigurationName)\**\*" />
+      <GetProcAddrHelper Include="..\GetProcAddrHelper\bin\x86\$(ConfigurationName)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(H2ToolHooks)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(GetProcAddrHelper)" DestinationFolder="Resources" SkipUnchangedFiles="true" />
+  </Target>
+  
   <Target Name="PostBuild Local" AfterTargets="PostBuildEvent">
     <Exec Command="call &quot;$(DevEnvDir)..\Tools\VsDevCmd.bat&quot; &amp;&amp; editbin /HIGHENTROPYVA:NO /DYNAMICBASE:NO /REBASE:base=0x10000 &quot;$(TargetDir)$(TargetName).exe&quot;" />
   </Target>

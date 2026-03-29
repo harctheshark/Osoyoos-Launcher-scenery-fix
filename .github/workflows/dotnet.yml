@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
       - '*.md'
+
   pull_request:
     paths-ignore:
       - '*.md'
@@ -12,38 +13,53 @@ jobs:
   build:
     outputs:
       product_version: ${{ steps.get_release_name.outputs.PRODUCT }}
+
     runs-on: windows-2025-vs2026
+
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT : true
+
     steps:
+
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
+        
     - name: setup-msbuild
       uses: microsoft/setup-msbuild@v2
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.x'
+
     - name: Install dependencies
       run: dotnet restore -r win-x64
+    
+    - name: Install Ninja
+      run: choco install ninja -y
+
+    - name: Install LLVM/Clang
+      run: choco install llvm -y
+
     - name: Enable developer command prompt
       uses: ilammy/msvc-dev-cmd@v1
-    - name: Build native binaries (ToolHooks)
-      run: msbuild ToolkitLauncher.slnx -target:H2ToolHooks -property:Configuration=Release -maxCpuCount
-    - name: Build native binaries (GetProcAddrHelper)
-      run: msbuild ToolkitLauncher.slnx -target:GetProcAddrHelper -property:Configuration=Release -maxCpuCount
+
     - name: Build
       run: dotnet build .\Launcher\ToolkitLauncher.csproj --configuration Release --no-restore
+
     - name: Test
       run: dotnet test .\Launcher\ToolkitLauncher.csproj --no-restore --verbosity normal
+
     - name: Publish
       run: dotnet publish .\Launcher\ToolkitLauncher.csproj -c Release -r win-x64 -P:PublishSingleFile=true -p:PublishTrimmed=false --self-contained false
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: launcher
         path: Launcher\bin\x64\Release\win-x64\publish\
+
     - name: Get release name
       shell: pwsh
       id: get_release_name
@@ -55,8 +71,10 @@ jobs:
       github.event.action != 'pull_request' &&
       (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') &&
       github.repository == 'MtnDewIt/Osoyoos-Launcher'
+
     needs: build
     runs-on: ubuntu-latest
+
     steps:
     
     - uses: actions/download-artifact@v4

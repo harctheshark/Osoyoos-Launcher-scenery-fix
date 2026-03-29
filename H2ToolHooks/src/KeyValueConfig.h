@@ -23,7 +23,7 @@ public:
 		error_msg(error)
 	{
 	};
-	const char* what()
+	const char* what() const noexcept override
 	{
 		return error_msg.c_str();
 	}
@@ -43,9 +43,9 @@ class KeyValueFile
 	}
 
 public:
-	KeyValueFile(std::filesystem::path path, bool autosave = false):
-		autosave(autosave),
-		settings_filename(path)
+	KeyValueFile(std::filesystem::path path, bool _autosave = false):
+		settings_filename(path),
+		autosave(_autosave)
 	{
 		std::ifstream file(path);
 
@@ -165,9 +165,9 @@ public:
 		try {
 			if (std::is_integral<NumericType>::value) {
 				if (std::is_signed<NumericType>::value)
-					return static_cast<NumericType>(std::stoll(value, 0, get_string_base(value)));
+					return static_cast<NumericType>(std::stoll(value, nullptr, get_string_base(value)));
 				else
-					return static_cast<NumericType>(std::stoull(value, 0, get_string_base(value)));
+					return static_cast<NumericType>(std::stoull(value, nullptr, get_string_base(value)));
 			}
 			else if (std::is_floating_point<NumericType>::value) {
 				return static_cast<NumericType>(std::stold(value));

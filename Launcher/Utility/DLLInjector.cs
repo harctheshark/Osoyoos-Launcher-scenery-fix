@@ -197,7 +197,7 @@ namespace ToolkitLauncher.Utility
         }
 
 
-		[SupportedOSPlatform("windows6.0.6000")]
+		[SupportedOSPlatform("windows")]
 		static private async Task<FARPROC> GetLibraryProcAddressForProcess(System.Diagnostics.Process process, string moduleName, string procName, string? moduleNameBackup = null)
         {
             bool isWOW64 = IsProcessWow64(process);
@@ -222,7 +222,7 @@ namespace ToolkitLauncher.Utility
 
             return procAddr;
 		}
-		[SupportedOSPlatform("windows6.0.6000")]
+		[SupportedOSPlatform("windows")]
 		static private unsafe void* AllocateAndWriteIntoProcess(HANDLE processHandle, byte[] data, bool isExecutable)
         {
 			void* remoteData = PInvoke.VirtualAllocEx(
@@ -261,7 +261,7 @@ namespace ToolkitLauncher.Utility
             return remoteData;
 		}
 
-		[SupportedOSPlatform("windows6.0.6000")]
+		[SupportedOSPlatform("windows")]
 		private async Task<HANDLE> EarlyProcessInject(System.Diagnostics.Process process, string dllName, uint timeout, bool injectWOW64 = false)
         {
 			bool isWOW64 = IsProcessWow64(process);
@@ -594,7 +594,7 @@ namespace ToolkitLauncher.Utility
             return new HANDLE(modulePtr);
 		}
 
-		[SupportedOSPlatform("windows6.0.6000")]
+		[SupportedOSPlatform("windows")]
 		public async Task<bool> Inject(Guid id, System.Diagnostics.Process process)
         {
 			Trace.WriteLine("Inject - DLL injector");

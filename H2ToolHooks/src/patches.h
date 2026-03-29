@@ -1,4 +1,4 @@
-﻿/*
+/*
  Copyright (c) num0005. Some rights reserved
  This software is part of the Osoyoos Launcher.
  Released under the MIT License, see LICENSE.md for more information.
@@ -90,7 +90,7 @@ inline void WritePointer(void* offset, const void* ptr) {
 /*
 	Write a block of `len` of nops at `address`
 */
-__forceinline void NopFill(const size_t address, int len)
+__forceinline void NopFill(const size_t address, size_t len)
 {
 	BYTE nop_fill_small[0x100];
 	BYTE* nop_fill = nullptr;
@@ -109,7 +109,7 @@ __forceinline void NopFill(const size_t address, int len)
 /*
 	Write a block of `len` of nops at `address`
 */
-inline void NopFill(const void* address, int len)
+inline void NopFill(const void* address, size_t len)
 {
 	NopFill(reinterpret_cast<size_t>(address), len);
 }

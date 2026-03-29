@@ -1,22 +1,26 @@
-#define WIN32_LEAN_AND_MEAN 1
 #include <Windows.h>
 #include <shellapi.h>
 
 static_assert(sizeof(unsigned int) == sizeof(size_t));
 
 // GetProcAddrHelper <library> <proc name>
-unsigned int main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     // bad arg count
     if (argc != 3)
+    {
         return 0;
+    }
+    
     HMODULE library = LoadLibraryA(argv[1]);
+
     if (library)
     {
-        size_t results = reinterpret_cast<size_t>(GetProcAddress(library, argv[2]));
+        int results = reinterpret_cast<int>(GetProcAddress(library, argv[2]));
         FreeLibrary(library);
         return results;
     }
+
     return 0;
 }
 

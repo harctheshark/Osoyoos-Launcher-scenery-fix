@@ -24,6 +24,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <Platforms>x64</Platforms>
+    <RuntimeIndentifier>win-x64</RuntimeIndentifier>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>

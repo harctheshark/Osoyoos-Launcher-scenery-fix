@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ManagedBlamHelper
 {
-    internal class Utility
+    public static class Utility
     {
         public static IEnumerable<int> FindPattern(byte[] data, byte[] pattern)
         {

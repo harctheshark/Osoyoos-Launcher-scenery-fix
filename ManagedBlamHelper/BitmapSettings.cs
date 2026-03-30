@@ -1,17 +1,15 @@
 ﻿using Bungie.Tags;
-using ManagedBlamHelper;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using static OsoyoosMB.MBHandler;
 
-namespace OsoyoosMB
+namespace ManagedBlamHelper
 {
-    internal class BitmapSettings
+    public class BitmapSettings
     {
-        public static void ConfigureCompression(EditingKitInfo editingKit, string tag_folder, string compress_value, bool override_existing)
+        public static void ConfigureCompression(MBHandler.EditingKitInfo editingKit, string tag_folder, string compress_value, bool override_existing)
         {
             // num0005 (2024), I don't think we need to get a list of all the already existing bitmaps if we are just reimporting files
 
@@ -229,7 +227,7 @@ namespace OsoyoosMB
             }
         }
 
-        public static IEnumerable<string> GetBitmapsToImport(EditingKitInfo editingKit, string files_path)
+        public static IEnumerable<string> GetBitmapsToImport(MBHandler.EditingKitInfo editingKit, string files_path)
         {
             // Get all tiffs in data folder
             string[] extensions = new[] { "*.tif", "*.tiff", "*.dds" };
@@ -287,7 +285,7 @@ namespace OsoyoosMB
                 tag = new TagFile(tag_path);
             }
 
-            public static TagFileBitmap FromFullPath(EditingKitInfo editingKit, string fullPath)
+            public static TagFileBitmap FromFullPath(MBHandler.EditingKitInfo editingKit, string fullPath)
             {
                 string tag_style_path = Path.ChangeExtension(Path.GetRelativePath(editingKit.TagDirectory, fullPath), null);
                 Debug.Assert(tag_style_path is not null);

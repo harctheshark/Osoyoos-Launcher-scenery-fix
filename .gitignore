@@ -1,4 +1,4 @@
-/Launcher/bin/*
+/OsoyoosLauncher/bin/*
 */obj/*
 *.vs/*
 *.vcxproj.user
@@ -9,10 +9,10 @@
 *.lib
 *.pdb
 !/OsoyoosMB/ref/ManagedBlam.dll
-!/ref/*
+!/Dependencies/ref/*
 !/packages/Resource.Embedder.2.1.1/tasks/net46/*.dll
 /icon_assets.7z
-/Launcher/Properties/launchSettings.json
+/OsoyoosLauncher/Properties/launchSettings.json
 /ManagedBlamHelper/bin/*
 H2ToolHooks/x64/*
 H2ToolHooks/Debug/*

@@ -1,11 +1,10 @@
 ﻿using Bungie;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using static OsoyoosMB.MBHandler;
 
 namespace ManagedBlamHelper
 {
-    internal class ManagedBlamInterface
+    public class ManagedBlamInterface
     {
         private static void ManagedBlamCrashCallback(ManagedBlamCrashInfo info)
         {
@@ -17,7 +16,7 @@ namespace ManagedBlamHelper
 
         public static bool IsGen4 => is_gen4;
 
-        public static void Start(EditingKitInfo info)
+        public static void Start(MBHandler.EditingKitInfo info)
         {
             Trace.WriteLine($"Starting ManagedBlam: {info}");
             is_gen4 = info.IsGen4;
@@ -56,7 +55,7 @@ namespace ManagedBlamHelper
         /// <param name="info"></param>
         /// <param name="initializationType"></param>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void StartGen3(EditingKitInfo info, InitializationType InitializationLevel)
+        private static void StartGen3(MBHandler.EditingKitInfo info, InitializationType InitializationLevel)
         {
             ManagedBlamSystem.InitializeProject(InitializationLevel, info.Path);
             _InitializationLevelGen3 = InitializationLevel;

@@ -42,24 +42,24 @@ jobs:
         arch: x86
 
     - name: Build
-      run: dotnet build .\Launcher\ToolkitLauncher.csproj --configuration Release -p:Platform=x64 --no-restore
+      run: dotnet build .\OsoyoosLauncher\OsoyoosLauncher.csproj --configuration Release -p:Platform=x64 --no-restore
 
     - name: Test
-      run: dotnet test .\Launcher\ToolkitLauncher.csproj --no-restore --verbosity normal -p:Platform=x64
+      run: dotnet test .\OsoyoosLauncher\OsoyoosLauncher.csproj --no-restore --verbosity normal -p:Platform=x64
 
     - name: Publish
-      run: dotnet publish .\Launcher\ToolkitLauncher.csproj -c Release -r win-x64 -p:Platform=x64 -P:PublishSingleFile=true -p:PublishTrimmed=false --self-contained false
+      run: dotnet publish .\OsoyoosLauncher\OsoyoosLauncher.csproj -c Release -r win-x64 -p:Platform=x64 -P:PublishSingleFile=true -p:PublishTrimmed=false --self-contained false
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: launcher
-        path: Launcher\bin\x64\Release\win-x64\publish\
+        name: OsoyoosLauncher
+        path: OsoyoosLauncher\bin\x64\Release\win-x64\publish\
 
     - name: Get release name
       shell: pwsh
       id: get_release_name
-      run: echo "PRODUCT=$((Get-Item -Path 'Launcher\bin\x64\Release\win-x64\publish\Osoyoos.exe').VersionInfo.ProductVersion)" >> $env:GITHUB_OUTPUT
+      run: echo "PRODUCT=$((Get-Item -Path 'OsoyoosLauncher\bin\x64\Release\win-x64\publish\Osoyoos.exe').VersionInfo.ProductVersion)" >> $env:GITHUB_OUTPUT
     
         
   release:
@@ -75,13 +75,13 @@ jobs:
     
     - uses: actions/download-artifact@v4
       with:
-        name: launcher
-        path: Launcher_win64
+        name: OsoyoosLauncher
+        path: OsoyoosLauncher_win64
      
     - uses: ncipollo/release-action@v1
       with:
         prerelease: true
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: Launcher_win64/*
+        artifacts: OsoyoosLauncher_win64/*
         tag: ${{ needs.build.outputs.product_version }}
         

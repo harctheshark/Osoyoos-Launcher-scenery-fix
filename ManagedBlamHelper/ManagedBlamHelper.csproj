@@ -14,7 +14,7 @@
   <ItemGroup>
     <Reference Include="ManagedBlam, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>false</SpecificVersion>
-      <HintPath>..\ref\ManagedBlam.dll</HintPath>
+      <HintPath>..\Dependencies\ref\ManagedBlam.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

@@ -9,13 +9,12 @@ In theory it already contains all namespaces/methods etc present in the full DLL
 In case it needs to be regenerated in future howerver:
 
 Refasmer can be installed from the terminal with "dotnet tool install -g JetBrains.Refasmer.CliTool"
-Once installed, run with "refasmer -v -O ref -c ManagedBlam.dll"
+Once installed, run with "refasmer -v -O Dependencies\ref -c ManagedBlam.dll"
 
 When you need to debug this code, you need to switch the project reference to the "full" .dll or it
 will crash at runtime. Don't forget to revert the reference back to version in the "ref" folder
 before committing or release.
 */
-using ManagedBlamHelper;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.Diagnostics;
@@ -26,16 +25,16 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
 
-namespace OsoyoosMB
+namespace ManagedBlamHelper
 {
-    public class MBHandler
+    public static class MBHandler
     {
         // random ID for MBHandler
         public const string command_id = "70512702-FBD6-400F-8398-E96D8EB3D802";
         // command to setup bitmaps
         public const string setup_bitmaps_command = "setup_bitmap_compression";
 
-        internal record EditingKitInfo(string Path, bool IsGen4, string TagDirectory, string DataDirectory);
+        public record EditingKitInfo(string Path, bool IsGen4, string TagDirectory, string DataDirectory);
 
         private static Assembly _managedblam_assembly = null;
         private static FileStream _patchedBinary = null;

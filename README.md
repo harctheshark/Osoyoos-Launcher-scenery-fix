@@ -5,7 +5,7 @@
 ## Launcher Description
 The Osoyoos launcher is an application that can be used to easily interact with various HEK toolsets from a simple GUI. Profiles can be created to run released or community modified toolsets.
 
-![A screenshot of the launcher](Osoyoos.png?raw=true "screenshot of the launcher")
+![A screenshot of the launcher](Documentation/Osoyoos.png?raw=true "screenshot of the launcher")
 
 ## Supported Titles and Features
 The following profiles are or will be supported by this launcher:

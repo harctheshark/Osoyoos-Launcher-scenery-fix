@@ -1,0 +1,11 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="OsoyoosLauncher/OsoyoosLauncher.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="ManagedBlamHelper/ManagedBlamHelper.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

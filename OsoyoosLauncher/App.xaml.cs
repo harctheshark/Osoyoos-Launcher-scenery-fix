@@ -1,12 +1,10 @@
-﻿using System.IO;
-using System.Windows;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using System;
-using ManagedBlamHelper;
 using OsoyoosLauncher.Utility;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace OsoyoosLauncher
 {
@@ -15,9 +13,15 @@ namespace OsoyoosLauncher
     /// </summary>
     public partial class App : Application
     {
-        private readonly static string appdata_path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        private readonly static string appdata_local_path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private static readonly string appdata_path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        private static readonly string appdata_local_path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        private static readonly int MAX_DELETE_RETRY = 10;
         private const string save_folder = "Osoyoos";
+
+        public static readonly string DeleteOldCommand = "-DeleteOldInternal";
+
+        public static string TempFolder => Path.Combine(appdata_local_path, save_folder, "Temp");
+
         public static string OsoyoosSavePath
         {
             get
@@ -26,15 +30,12 @@ namespace OsoyoosLauncher
             }
         }
 
-        public static string TempFolder => Path.Combine(appdata_local_path, save_folder, "Temp");
-
-        public static readonly string DeleteOldCommand = "-DeleteOldInternal";
-        private static readonly int MAX_DELETE_RETRY = 10;
-
         private async void handleDeleteCommand(string file)
         {
-            for (int i = 0; i < MAX_DELETE_RETRY; i++) {
+            for (int i = 0; i < MAX_DELETE_RETRY; i++) 
+            {
                 await Task.Delay(2000); // give the parent time to exit
+
                 try
                 {
                     File.Delete(file);
@@ -48,23 +49,28 @@ namespace OsoyoosLauncher
             }
             Trace.WriteLine($"Gave up attempted to delete \"{file}\" after reaching MAX_DELETE_RETRY ({MAX_DELETE_RETRY})");
         }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             try
             {
                 Directory.CreateDirectory(TempFolder);
-            } catch (Exception ex)
+            } 
+            catch (Exception ex)
             {
                 Trace.WriteLine("Failed to create temporary folder:");
                 Trace.WriteLine(ex);
             }
 
             Documentation.Contents.GetHashCode(); // touch
+
             // check startup commands
             if (e.Args.Length >= 2)
             {
-                if (e.Args[0] == DeleteOldCommand)
+                if (e.Args[0] == DeleteOldCommand) 
+                {
                     handleDeleteCommand(e.Args[1]);
+                }
             }
 
             base.OnStartup(e);
@@ -101,36 +107,6 @@ namespace OsoyoosLauncher
             {
                 Trace.WriteLine($"Failed to enumerate temporary files {ex}");
             }
-        }
-
-        [STAThread]
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        public static int Main(String[] args)
-        {
-            int return_code = 0;
-            // check if we are called by ourselves
-            if (args.Length > 0 && args[0] == MBHandler.command_id && OperatingSystem.IsWindows())
-            {
-                LogManager.InitializeLogging("ManagedHelper");
-                return_code = MBHandler.Premain(args[1..]);
-            }
-            else // otherwise just run the launcher
-            {
-                // run WPF application
-                LogManager.InitializeLogging("Launcher");
-                ApplicationMain();
-            }
-
-
-            return return_code;
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        static void ApplicationMain()
-        {
-            var app = new App();
-            app.InitializeComponent();
-            app.Run();
         }
     }
 }

@@ -17,11 +17,11 @@ namespace OsoyoosLauncher
         {
             Invalid = 0,
             /// <summary>
-            /// Halo 1 - h1ce, h1pc and h1mcc
+            /// Halo 1 - H1CE, H1PC and H1MCC
             /// </summary>
             Halo1 = 1,
             /// <summary>
-            /// Halo 2 - vista, h2x and h2mcc
+            /// Halo 2 - Vista, H2X and H2MCC
             /// </summary>
             Halo2 = 2,
             /// <summary>
@@ -29,7 +29,7 @@ namespace OsoyoosLauncher
             /// </summary>
             Halo3 = 3,
             /// <summary>
-            // Halo Reach and H4/H2A
+            /// Halo Reach and H4/H2A
             /// </summary>
             Gen4 = 4,
         }

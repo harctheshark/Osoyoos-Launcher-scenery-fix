@@ -14,8 +14,7 @@ namespace OsoyoosLauncher
 
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
-
     }
 }

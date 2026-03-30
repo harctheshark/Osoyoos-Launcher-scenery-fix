@@ -9,7 +9,7 @@ namespace OsoyoosLauncher.Utility
 {
     class LogManager
     {
-        static public readonly string LogFolder = Path.Combine(App.OsoyoosSavePath, "logs");
+        public static readonly string LogFolder = Path.Combine(App.OsoyoosSavePath, "logs");
 
         private const int _min_logs_to_keep = 10;
         private const int _min_days_to_store_logs = 14;
@@ -17,7 +17,7 @@ namespace OsoyoosLauncher.Utility
         static private readonly TimeSpan _time_to_keep_logs = TimeSpan.FromDays(_min_days_to_store_logs);
         static private string _log_filename = null;
 
-        static public void RotateLogs()
+        public static void RotateLogs()
         {
             Trace.WriteLine($"Rotating logs....");
             try

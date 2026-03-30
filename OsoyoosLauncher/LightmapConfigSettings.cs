@@ -1,41 +1,54 @@
-﻿namespace OsoyoosLauncher
+﻿using OsoyoosLauncher.Utility;
+
+namespace OsoyoosLauncher
 {
     public class LightmapConfigSettings
     {
+        private readonly KeyValueConfig config;
+
+        public string Path { get => config.filePath; }
+
         public LightmapConfigSettings(string path)
         {
-            this.config = new(path);
+            config = new(path);
         }
+
         public bool IsCheckerboard
         {
             get { return config.Get("is_checkboard", false); }
             set { config.Set("is_checkboard", value); }
         }
+
         public bool IsDirectOnly
         {
             get { return config.Get("is_direct_only", false); }
             set { config.Set("is_direct_only", value); }
         }
+
         public bool IsDraft
         {
             get { return config.Get("is_draft", false); }
             set { config.Set("is_draft", value); }
         }
+
         public int SampleCount
         {
             get { return config.Get("monte_carlo_sample_count", 8); }
             set { config.Set("main_monte_carlo_setting", value); config.Set("monte_carlo_sample_count", value); }
         }
+
         public int PhotonCount
         {
             get { return config.Get("photon_count", 20000000); }
             set { config.Set("proton_count", value); config.Set("photon_count", value); }
 		}
+
         public int AASampleCount
         {
             get { return config.Get("secondary_monte_carlo_setting", 4); }
             set { config.Set("secondary_monte_carlo_setting", value); }
         }
+
         public float GatherDistance
         {
             get { return config.Get("unk7", 4.0f); }
@@ -64,9 +77,5 @@
         {
             return config.WriteToFile();
         }
-
-        public string Path { get => config.filePath; }
-
-        readonly private Utility.KeyValueConfig config;
     }
 }

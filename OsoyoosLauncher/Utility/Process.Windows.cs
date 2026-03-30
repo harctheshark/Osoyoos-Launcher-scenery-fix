@@ -346,7 +346,7 @@ namespace OsoyoosLauncher.Utility
                         return ProcessPriorityClass.Idle;
                 }
             }
-            static public async Task<Result> StartProcess(string directory, string executable, List<string> args, bool lowPriority, bool admin, bool noWindow, string? logFileName, InjectionConfig? injectionOptions, CancellationToken cancellationToken)
+            public static async Task<Result> StartProcess(string directory, string executable, List<string> args, bool lowPriority, bool admin, bool noWindow, string? logFileName, InjectionConfig? injectionOptions, CancellationToken cancellationToken)
             {
                 try
                 {
@@ -488,7 +488,7 @@ namespace OsoyoosLauncher.Utility
                 }
             }
 
-            static public async Task<Result?> StartProcessWithShell(string directory, string executable, string args, bool lowPriority, InjectionConfig? injectionOptions, CancellationToken cancellationToken)
+            public static async Task<Result?> StartProcessWithShell(string directory, string executable, string args, bool lowPriority, InjectionConfig? injectionOptions, CancellationToken cancellationToken)
             {
                 // build command line
                 string commnad_line = "/c \"" + escape_arg(executable) + " " + args + " & pause\"";

@@ -6,15 +6,17 @@ namespace ManagedBlamHelper
 {
     public class ManagedBlamInterface
     {
+        private static bool is_gen4;
+
+        private static InitializationType _InitializationLevelGen3 = InitializationType.None;
+
+        public static bool IsGen4 => is_gen4;
+
         private static void ManagedBlamCrashCallback(ManagedBlamCrashInfo info)
         {
             Trace.WriteLine($"Managed blam {info.Type.ToString().ToLower()}: {info.Message}");
             Trace.WriteLine($"Location: {info.File}:{info.Line}");
         }
-
-        private static bool is_gen4;
-
-        public static bool IsGen4 => is_gen4;
 
         public static void Start(MBHandler.EditingKitInfo info)
         {
@@ -46,8 +48,6 @@ namespace ManagedBlamHelper
                 StopGen3();
             }
         }
-
-        private static InitializationType _InitializationLevelGen3 = InitializationType.None;
 
         /// <summary>
         /// Setup Gen3 editing kit, we need a special method for this cause gen4 doesn't have the required types.

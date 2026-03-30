@@ -10,24 +10,8 @@ namespace OsoyoosLauncher
     {
         private const string settings_file = "Settings.JSON";
 
-        private static List<ProfileSettingsLauncher> _SettingsList = new();
+        private static List<ProfileSettingsLauncher> _SettingsList = [];
         public static List<ProfileSettingsLauncher> SettingsList => _SettingsList;
-
-        private class BuildTypeJsonConverter : JsonConverter<build_type>
-        {
-            public override build_type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                build_type parsed;
-                if (Enum.TryParse(reader.GetString(), out parsed))
-                    return parsed;
-                return build_type.release_standalone;
-            }
-
-            public override void Write(Utf8JsonWriter writer, build_type value, JsonSerializerOptions options)
-            {
-                writer.WriteStringValue(value.ToString());
-            }
-        }
 
         public enum GameGen
         {
@@ -50,6 +34,23 @@ namespace OsoyoosLauncher
             Gen4 = 4,
         }
 
+        private class BuildTypeJsonConverter : JsonConverter<build_type>
+        {
+            public override build_type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (Enum.TryParse(reader.GetString(), out build_type parsed))
+                {
+                    return parsed;
+                }
+
+                return build_type.release_standalone;
+            }
+
+            public override void Write(Utf8JsonWriter writer, build_type value, JsonSerializerOptions options)
+            {
+                writer.WriteStringValue(value.ToString());
+            }
+        }
 
 #nullable enable
         public class ProfileSettingsLauncher
@@ -206,7 +207,7 @@ namespace OsoyoosLauncher
                 if (Generation == GameGen.Invalid)
                 {
                     Generation = (GameGen)(GameGenLegacy + 1);
-                    if (!Enum.IsDefined(typeof(GameGen), Generation))
+                    if (!Enum.IsDefined(Generation))
                     {
                         Generation = GameGen.Invalid;
                     }

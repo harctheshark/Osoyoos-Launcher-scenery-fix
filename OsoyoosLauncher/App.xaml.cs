@@ -26,7 +26,7 @@ namespace OsoyoosLauncher
             }
         }
 
-        static public string TempFolder => Path.Combine(appdata_local_path, save_folder, "Temp");
+        public static string TempFolder => Path.Combine(appdata_local_path, save_folder, "Temp");
 
         public static readonly string DeleteOldCommand = "-DeleteOldInternal";
         private static readonly int MAX_DELETE_RETRY = 10;

@@ -45,7 +45,7 @@ namespace OsoyoosLauncher.Utility
         /// <param name="cancellationToken"> Cancellation token for canceling the process before it exists</param>
         /// <param name="lowPriority">Lower priority if possible</param>
         /// <returns>A task that will complete when the executable exits</returns>
-        static public Task<Result> StartProcess(string directory, string executable, List<string> args, bool lowPriority = false, bool admin = false, bool noWindow = false, string? logFileName = null, InjectionConfig? injectionOptions = null, CancellationToken cancellationToken = default)
+        public static Task<Result> StartProcess(string directory, string executable, List<string> args, bool lowPriority = false, bool admin = false, bool noWindow = false, string? logFileName = null, InjectionConfig? injectionOptions = null, CancellationToken cancellationToken = default)
         {
             string? argsForDebug = args is not null ? EscapeArgList(args) : null;
 
@@ -65,7 +65,7 @@ namespace OsoyoosLauncher.Utility
         /// <param name="injectionOptions"></param>
         /// <returns>A task that will complete when the executable exits</returns>
         /// <param name="cancellationToken"> Cancellation token for canceling the process before it exists</param>
-        static public Task<Result?> StartProcessWithShell(string directory, string executable, string args, bool lowPriority = false, InjectionConfig? injectionOptions = null, CancellationToken cancellationToken = default)
+        public static Task<Result?> StartProcessWithShell(string directory, string executable, string args, bool lowPriority = false, InjectionConfig? injectionOptions = null, CancellationToken cancellationToken = default)
         {
             Trace.WriteLine($"starting_with_shell(): directory: {directory}, executable:{executable}, args:{args}");
             if (OperatingSystem.IsWindows())
@@ -83,7 +83,7 @@ namespace OsoyoosLauncher.Utility
         /// <param name="injectionOptions"></param>
         /// <returns>A task that will complete when the executable exits</returns>
         /// <param name="cancellationToken"> Cancellation token for canceling the process before it exists</param>
-        static public async Task<Result?> StartProcessWithShell(string directory, string executable, List<string> args, bool lowPriority = false, InjectionConfig? injectionOptions = null, CancellationToken cancellationToken = default)
+        public static async Task<Result?> StartProcessWithShell(string directory, string executable, List<string> args, bool lowPriority = false, InjectionConfig? injectionOptions = null, CancellationToken cancellationToken = default)
         {
             return await StartProcessWithShell(directory, executable, EscapeArgList(args), lowPriority, injectionOptions, cancellationToken: cancellationToken);
         }
@@ -93,7 +93,7 @@ namespace OsoyoosLauncher.Utility
         /// </summary>
         /// <param name="args">Unescaped arguments</param>
         /// <returns>Escaped command string</returns>
-        static public string EscapeArgList(IEnumerable<string> args)
+        public static string EscapeArgList(IEnumerable<string> args)
         {
             string commnad_line = "";
             foreach (string arg in args)
@@ -105,7 +105,7 @@ namespace OsoyoosLauncher.Utility
         /// Open the URL in the default web browser
         /// </summary>
         /// <param name="url"></param>
-        static public void OpenURL(string url)
+        public static void OpenURL(string url)
         {
             if (!OperatingSystem.IsWindows())
                 throw new PlatformNotSupportedException();

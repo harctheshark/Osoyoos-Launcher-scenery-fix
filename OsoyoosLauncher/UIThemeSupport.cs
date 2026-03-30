@@ -1,14 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
 
 namespace OsoyoosLauncher
 {
-    record ARGB(byte a, byte r, byte g, byte b);
-    record SolidColorTheme(
+    public record ARGB(byte A, byte R, byte G, byte B);
+    public record SolidColorTheme(
          ARGB TextColor,
 
          //Window Colors - Grids need Background set for this to work
@@ -637,7 +635,7 @@ namespace OsoyoosLauncher
         {
             static Color MakeColor(ARGB argb)
             {
-                return Color.FromArgb(argb.a, argb.r, argb.g, argb.b);
+                return Color.FromArgb(argb.A, argb.R, argb.G, argb.B);
             }
 
             static SolidColorBrush MakeSolidColorBrush(ARGB argb)

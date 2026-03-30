@@ -59,7 +59,8 @@ namespace OsoyoosLauncher.UI
         {
             get
             {
-                DoubleCollection converted = new();
+                DoubleCollection converted = [];
+
                 foreach (double tick in Ticks)
                 {
                     converted.Add(LinearToThreshold(tick));
@@ -91,18 +92,16 @@ namespace OsoyoosLauncher.UI
 
         private void UpdateAutoTooltip()
         {
-            if (_autoToolTip != null)
-            {
-                _autoToolTip.Content = GetAutoToolTipNumber();
-            }
+            _autoToolTip?.Content = GetAutoToolTipNumber();
         }
 
         // START copied from WPF source (Value replaced with convertedValue)
         private string GetAutoToolTipNumber()
         {
-            NumberFormatInfo format = (NumberFormatInfo)(NumberFormatInfo.CurrentInfo.Clone());
-            format.NumberDecimalDigits = this.AutoToolTipPrecision;
-            return this.ConvertedValue.ToString("N", format);
+            NumberFormatInfo format = NumberFormatInfo.CurrentInfo.Clone() as NumberFormatInfo;
+            format.NumberDecimalDigits = AutoToolTipPrecision;
+
+            return ConvertedValue.ToString("N", format);
         }
         // END copied
 

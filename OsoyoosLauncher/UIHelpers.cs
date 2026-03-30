@@ -48,10 +48,10 @@ namespace OsoyoosLauncher
         private Type _enumType;
         public Type EnumType
         {
-            get { return this._enumType; }
+            get => _enumType;
             set
             {
-                if (value != this._enumType)
+                if (value != _enumType)
                 {
                     if (null != value)
                     {
@@ -61,39 +61,45 @@ namespace OsoyoosLauncher
                             throw new ArgumentException("Type must be for an Enum.");
                     }
 
-                    this._enumType = value;
+                    _enumType = value;
                 }
             }
         }
 
-        public EnumBindingSourceExtension() { }
+        public EnumBindingSourceExtension() 
+        { 
+        }
 
         public EnumBindingSourceExtension(Type enumType)
         {
-            this.EnumType = enumType;
+            EnumType = enumType;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            if (null == this._enumType)
+            if (null == _enumType) 
+            {
                 throw new InvalidOperationException("The EnumType must be specified.");
+            }
 
-            Type actualEnumType = Nullable.GetUnderlyingType(this._enumType) ?? this._enumType;
+            Type actualEnumType = Nullable.GetUnderlyingType(_enumType) ?? _enumType;
             Array enumValues = Enum.GetValues(actualEnumType);
 
-            if (actualEnumType == this._enumType)
+            if (actualEnumType == _enumType) 
+            {
                 return enumValues;
+            }
 
             Array tempArray = Array.CreateInstance(actualEnumType, enumValues.Length + 1);
             enumValues.CopyTo(tempArray, 1);
+
             return tempArray;
         }
     }
 
     public class EnumDescriptionTypeConverter : EnumConverter
     {
-        public EnumDescriptionTypeConverter(Type type)
-            : base(type)
+        public EnumDescriptionTypeConverter(Type type) : base(type)
         {
         }
 
@@ -107,7 +113,7 @@ namespace OsoyoosLauncher
                     if (fi != null)
                     {
                         var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                        return ((attributes.Length > 0) && (!String.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
+                        return ((attributes.Length > 0) && (!string.IsNullOrEmpty(attributes[0].Description))) ? attributes[0].Description : value.ToString();
                     }
                 }
 
@@ -126,14 +132,17 @@ namespace OsoyoosLauncher
             // (to avoid crash bugs for views in the designer)
             if (values[0] is bool hasText && values[1] is bool hasFocus)
             {
-                if (!hasText || hasFocus)
+                if (!hasText || hasFocus) 
+                {
                     return Visibility.Collapsed;
+                }
             }
+
             return Visibility.Visible;
         }
     }
 
-    internal class BindingToolkitParser
+    public class BindingToolkitParser
     {
         [Flags]
         public enum TogglesUI
@@ -162,13 +171,16 @@ namespace OsoyoosLauncher
 
         }
 
-        static public TogglesUI ParseFlagSet(string input)
+        public static TogglesUI ParseFlagSet(string input)
         {
             TogglesUI flags = TogglesUI.None;
 
             foreach (string element  in input.Split("|")) 
             {
-                if (String.IsNullOrEmpty(element)) continue;
+                if (string.IsNullOrEmpty(element)) 
+                {
+                    continue;
+                }
 
                 TogglesUI value = Enum.Parse<TogglesUI>(element.Trim(), true);
                 flags |= value;
@@ -177,7 +189,7 @@ namespace OsoyoosLauncher
             return flags;
         }
 
-        static public List<TogglesUI> ParseMultiFlagSet(string input)
+        public static List<TogglesUI> ParseMultiFlagSet(string input)
         {
             List<TogglesUI> flagSets = new();
 
@@ -190,7 +202,7 @@ namespace OsoyoosLauncher
             return flagSets;
         }
 
-        static public List<string> ParseBindingList(string input)
+        public static List<string> ParseBindingList(string input)
         {
             Debug.Assert(input != null);
             Debug.Assert(input.StartsWith("("));
@@ -207,7 +219,7 @@ namespace OsoyoosLauncher
             return elements;
         }
 
-        static public bool IsAnyInEnableListValid(IEnumerable<TogglesUI> enable_for)
+        public static bool IsAnyInEnableListValid(IEnumerable<TogglesUI> enable_for)
         {
             bool enable;
             if (MainWindow.toolkit_profile is not null)

@@ -40,7 +40,7 @@ namespace OsoyoosLauncher.Utility
         /// Check if the d3d9 redist package is installed already
         /// </summary>
         /// <returns></returns>
-        static public bool IsRedistInstalled()
+        public static bool IsRedistInstalled()
         {
             string windows_folder = _32bit_windows_folder();
             string redist_dll = Path.Join(windows_folder, redist_dll_name);
@@ -48,13 +48,13 @@ namespace OsoyoosLauncher.Utility
             return File.Exists(redist_dll);
         }
 
-        static public async Task<IReadOnlyList<GitHubReleases.Release>> GetReleases()
+        public static async Task<IReadOnlyList<GitHubReleases.Release>> GetReleases()
         {
             GitHubReleases gitHubReleases = new();
             return await gitHubReleases.GetReleasesForRepo(repoOwner, repoName);
         }
 
-        static public async Task<GitHubReleases.Release?> GetLatestRelease()
+        public static async Task<GitHubReleases.Release?> GetLatestRelease()
         {
             IReadOnlyList<GitHubReleases.Release> list = await GetReleases();
 
@@ -146,7 +146,7 @@ progress, token);
             }
         }
 
-        static public async Task<int?> Install(string prt_tool_path, GitHubReleases.Release? targetRelease = null)
+        public static async Task<int?> Install(string prt_tool_path, GitHubReleases.Release? targetRelease = null)
         {
             CancelableProgressBarWindow<long> progress = new();
             progress.Status = "Fetching prt_sim version information";

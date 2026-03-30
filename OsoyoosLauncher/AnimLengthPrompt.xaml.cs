@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Input;
 
 namespace OsoyoosLauncher
@@ -16,25 +16,27 @@ namespace OsoyoosLauncher
 
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            DialogResult = true;
+            Close();
         }
+
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
-        private void spaces_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void Spaces_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             //Set handled to true if the key is space. Stops us from entering spaces in textboxes.
-            if (e.Key == Key.Space)
+            if (e.Key == Key.Space) 
+            {
                 e.Handled = true;
+            }
         }
 
-        private void numbers_only(object sender, TextCompositionEventArgs e)
+        private void Numbers_Only(object sender, TextCompositionEventArgs e)
         {
-            var textBox = sender as TextBox;
-            e.Handled = System.Text.RegularExpressions.Regex.IsMatch(e.Text, "[^0-9]+");
+            e.Handled = Regex.IsMatch(e.Text, "[^0-9]+");
         }
     }
 }

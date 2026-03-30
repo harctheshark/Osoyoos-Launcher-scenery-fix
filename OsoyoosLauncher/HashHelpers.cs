@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace OsoyoosLauncher
 {
-    static class HashHelpers
+    public static class HashHelpers
     {
         private static IEnumerable<string> GetExecutableNames(string directory)
         {
@@ -20,16 +20,22 @@ namespace OsoyoosLauncher
         /// <returns>A list containing a tuple containing the file name and hash</returns>
         public static List<(string name, TlshHash hash)> GetExecutableTLSHashes(string directory)
         {
-            List<(string, TlshHash)> result = new();
+            List<(string, TlshHash)> result = [];
+
             foreach (string fileName in GetExecutableNames(directory))
             {
                 TlshBuilder tlshBuilder = new();
+
                 var buffer = new byte[1024 * 4];
+
                 using (FileStream stream = File.OpenRead(fileName))
                 {
                     long length = stream.Length;
-                    while (stream.Position != length)
+
+                    while (stream.Position != length) 
+                    {
                         tlshBuilder.Update(buffer, 0, stream.Read(buffer, 0, buffer.Length));
+                    }
                 }
 
                 TlshHash hash = tlshBuilder.GetHash(true);
@@ -47,7 +53,8 @@ namespace OsoyoosLauncher
         /// <returns>A list containing a tuple containing the file name and hash</returns>
         public static List<(string name, string hash)> GetExecutableMD5Hashes(string directory)
         {
-            List<(string, string)> result = new();
+            List<(string, string)> result = [];
+
             foreach (string fileName in GetExecutableNames(directory))
             {
                 string hash = GetMD5Hash(fileName);
@@ -62,7 +69,7 @@ namespace OsoyoosLauncher
         {
 			using var md5 = System.Security.Cryptography.MD5.Create();
 			using var stream = File.OpenRead(fileName);
-			string hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
+			string hash = Convert.ToHexString(md5.ComputeHash(stream));
 
             return hash;
 		}

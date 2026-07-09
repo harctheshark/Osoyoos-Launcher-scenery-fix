@@ -602,7 +602,10 @@ namespace OsoyoosLauncher.Utility
             // disable timeout for debug builds so we can debug the injection process
             const uint timeout = uint.MaxValue;
 #else
-            const uint timeout = 1800; // 1.8 seconds
+            // The remote LoadLibrary thread always completes; a short timeout just makes the launcher give up
+            // early and skip the injection when the target is CPU-starved (e.g. 32 concurrent lightmap workers),
+            // which is why only ~1/3 of workers were getting patched. Use a generous ceiling instead.
+            const uint timeout = 60000; // 60 seconds
 #endif
 
             HANDLE processHandle = (HANDLE)process.Handle;

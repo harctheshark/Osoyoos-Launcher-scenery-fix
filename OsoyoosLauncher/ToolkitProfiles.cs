@@ -120,6 +120,9 @@ namespace OsoyoosLauncher
             [JsonPropertyName("reach_color_assert_fix")]
             public bool ReachColorAssertFix { get; set; } = false;
 
+            [JsonPropertyName("h2_lightmap_scenery_fix")]
+            public bool H2LightmapSceneryFix { get; set; } = false;
+
 			/// <summary>
 			/// Whatever we should temporarily be experts
 			/// </summary>

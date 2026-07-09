@@ -56,9 +56,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_PROCESS_ATTACH:
     {
         OutputDebugStringA("[DLL FIX] DLL_PROCESS_ATTACH\n");
-        attach_to_console();
 
         pause_on_exit = is_launcher_variable_set("PAUSE_ON_EXIT");
+
+        // Allocating a console per injected process is expensive and, with many concurrent lightmap farm
+        // workers (up to 32), the added startup cost makes the launcher's injection wait time out for most of
+        // them. Only attach a console when explicitly debugging (PAUSE_ON_EXIT needs one to read input).
+        if (pause_on_exit || is_launcher_variable_set("CONSOLE"))
+            attach_to_console();
 
         int flags = {};
 
@@ -66,6 +71,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             flags |= H2ToolHooks::HookFlags::DisableAsserts;
         if (is_launcher_variable_set("PATCH_QUALITY"))
             flags |= H2ToolHooks::HookFlags::PatchLightmapQuality;
+        if (is_launcher_variable_set("LIGHTMAP_SCENERY_FIX"))
+            flags |= H2ToolHooks::HookFlags::ApplyLightmapSceneryFix;
 
         if (flags == 0 && !is_launcher_variable_set("EVENT"))
         {

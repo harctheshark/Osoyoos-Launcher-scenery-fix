@@ -11,6 +11,9 @@
 #include "Debug.h"
 #include "KeyValueConfig.h"
 
+// H2 lightmapper scenery/dynamic-object bake fix (LightmapSceneryFix.cpp)
+bool apply_lightmap_scenery_fix();
+
 static bool disable_assertions(const PatternScanner &scanner)
 {
 	DebugPrintf("Disabling assertions");
@@ -152,6 +155,10 @@ bool H2ToolHooks::hook(HookFlags flags)
 	if (flags & HookFlags::PatchLightmapQuality)
 	{
 		success = patch_lightmap_quality(scanner) && success;
+	}
+	if (flags & HookFlags::ApplyLightmapSceneryFix)
+	{
+		success = apply_lightmap_scenery_fix() && success;
 	}
 
 	return success;

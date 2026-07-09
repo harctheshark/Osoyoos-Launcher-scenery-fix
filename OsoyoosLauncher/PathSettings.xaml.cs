@@ -286,6 +286,7 @@ namespace OsoyoosLauncher
             expert_mode.IsChecked = false;
             batch.IsChecked = false;
             lm_color_fix.IsChecked = false;
+            h2_lightmap_scenery_fix.IsChecked = false;
             h2codez_update_groupbox.Visibility = Visibility.Collapsed;
             if (profile_select != null && profile_select.SelectedItem != null && ToolkitProfiles.SettingsList.Count > profile_index && profile_index >= 0)
             {
@@ -306,6 +307,7 @@ namespace OsoyoosLauncher
                 expert_mode.IsChecked = ToolkitProfiles.SettingsList[profile_index].ExpertMode;
                 batch.IsChecked = ToolkitProfiles.SettingsList[profile_index].Batch;
                 lm_color_fix.IsChecked = ToolkitProfiles.SettingsList[profile_index].ReachColorAssertFix;
+                h2_lightmap_scenery_fix.IsChecked = ToolkitProfiles.SettingsList[profile_index].H2LightmapSceneryFix;
 
                 h2codez_update_groupbox.Visibility = ToolkitProfiles.SettingsList[profile_index].IsH2Codez() ?
                     Visibility.Visible : Visibility.Collapsed;
@@ -360,6 +362,7 @@ namespace OsoyoosLauncher
                 ExpertMode = (bool)expert_mode.IsChecked,
                 Batch = (bool)batch.IsChecked,
                 ReachColorAssertFix = (bool)lm_color_fix.IsChecked,
+                H2LightmapSceneryFix = (bool)h2_lightmap_scenery_fix.IsChecked,
             };
 
             // get new and old base directory

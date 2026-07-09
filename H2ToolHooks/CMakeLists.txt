@@ -6,6 +6,7 @@ set(SOURCES
     src/dllmain.cpp
     src/H2ToolHooks.cpp
     src/PatternScanner.cpp
+    src/LightmapSceneryFix.cpp
 )
 
 add_library(H2ToolHooks SHARED ${SOURCES})

@@ -53,7 +53,10 @@ namespace OsoyoosLauncher.OsoyoosInterface
             await RunTool(ToolType.Tool, new List<string>() { "build-cache-file", scenario.Replace(".scenario", "") });
         }
 
-        static private DLLInjector GetLightmapConfigInjector()
+        // DLL injection (CreateRemoteThread) is only used for the custom-quality patch. The scenery fix does NOT
+        // go through here — it's applied via the reliable suspend+WriteProcessMemory cave (see GetSceneryCave),
+        // because DLL injection drops most workers at high instance counts (e.g. 32).
+        static private DLLInjector GetLightmapQualityInjector()
         {
 			static void ModifyEnviroment(IDictionary<string, string?> Enviroment)
 			{
@@ -62,6 +65,40 @@ namespace OsoyoosLauncher.OsoyoosInterface
 
             return new(Resources.H2ToolHooks, "h2.patch.lightmap-quality.dll", ModifyEnviroment, earlyInjection: true);
 		}
+
+        // MD5 of the stock tool_fast.exe the scenery-fix cave was RE'd against; the cave's absolute addresses
+        // (0x49CF55 / 0x49DA6A hooks, 0x17B0000 base) are only valid for this exact build.
+        private const string _tool_fast_scenery_fix_md5 = "3A889D370A7BE537AF47FF8035ACD201";
+
+        private static H2ToolLightmapFixInjector.CavePayload _sceneryCave;
+        private static byte[] LoadEmbedded(string endsWith)
+        {
+            var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            string name = asm.GetManifestResourceNames().Single(n => n.EndsWith(endsWith));
+            using var s = asm.GetManifestResourceStream(name);
+            using var ms = new MemoryStream();
+            s.CopyTo(ms);
+            return ms.ToArray();
+        }
+        private static H2ToolLightmapFixInjector.CavePayload GetSceneryCave()
+        {
+            if (_sceneryCave is null)
+            {
+                byte[] image = LoadEmbedded("objfix_cave.bin");
+                byte[] relocBytes = LoadEmbedded("objfix_cave.reloc");
+                int count = System.BitConverter.ToInt32(relocBytes, 0);
+                uint[] rvas = new uint[count];
+                for (int i = 0; i < count; i++)
+                    rvas[i] = System.BitConverter.ToUInt32(relocBytes, 4 + i * 4);
+
+                _sceneryCave = new H2ToolLightmapFixInjector.CavePayload(
+                    image,
+                    0x17B0000,                                              // link base of the cave image
+                    rvas,
+                    new (uint, uint)[] { (0x49CF55u, 0x1010u), (0x49DA6Au, 0x1030u) }); // (tool entry, cave hook RVA)
+            }
+            return _sceneryCave;
+        }
 
 		private record NopFillFormat(uint BaseAddress, List<uint> CallsToPatch);
 
@@ -76,7 +113,7 @@ namespace OsoyoosLauncher.OsoyoosInterface
 				new NopFillFormat(0x400000, new() {0x4ADD50, 0x4ADFF5}) }  // tag_save lightmap_tag, tag_save scenario_editable
 		};
 
-		private H2ToolLightmapFixInjector? GetInjector(LightmapArgs args)
+		private H2ToolLightmapFixInjector? GetInjector(LightmapArgs args, bool sceneryFix)
         {
             if (!Profile.IsMCC)
                 return null;
@@ -98,7 +135,10 @@ namespace OsoyoosLauncher.OsoyoosInterface
 
                 IEnumerable<H2ToolLightmapFixInjector.NopFill> nopFills = config.CallsToPatch.Select(offset => new H2ToolLightmapFixInjector.NopFill(offset, 5));
 
-                return new H2ToolLightmapFixInjector(config.BaseAddress, nopFills);
+                // the scenery-fix cave is only valid for the exact stock tool_fast.exe it was RE'd against
+                H2ToolLightmapFixInjector.CavePayload? cave = (sceneryFix && tool_hash == _tool_fast_scenery_fix_md5) ? GetSceneryCave() : null;
+
+                return new H2ToolLightmapFixInjector(config.BaseAddress, nopFills, cave);
 
 			}
             else
@@ -113,18 +153,40 @@ namespace OsoyoosLauncher.OsoyoosInterface
 
 			DLLInjector? lightmapQualityInjector = null;
 
-			if (args.QualitySetting == "custom" && Profile.IsMCC)
+			bool useCustomQuality = args.QualitySetting == "custom" && Profile.IsMCC;
+			bool useSceneryFix = Profile.H2LightmapSceneryFix && Profile.IsMCC;
+
+			// The scenery fix is applied by patching the worker BEFORE it runs any lightmap code (CREATE_SUSPENDED).
+			// The shell-based output modes launch the tool through a shell and are patched too late, so the fix
+			// would silently not apply. Require a Silent output mode instead of failing quietly.
+			if (useSceneryFix && (args.outputSetting == OutputMode.keepOpen || args.outputSetting == OutputMode.closeShell))
+			{
+				MessageBox.Show(
+					"The Scenery Lightmap Fix requires a \"Silent\" output mode (Silent, or Silent + log to disk).\n\n" +
+					"The \"Keep shell open\" / \"Close shell\" modes launch the tool through a shell, which the fix " +
+					"cannot patch early enough to take effect. Change the lightmap output mode and try again.",
+					"Scenery fix is not compatible with this mode.");
+				return;
+			}
+
+			if (useCustomQuality)
 			{
                 if (args.outputSetting == OutputMode.keepOpen)
                 {
                 MessageBox.Show(
-                    "Output mode \"keep open\" is not compatible with custom quality setting.", 
+                    "Output mode \"keep open\" is not compatible with custom quality setting.",
                     "Invalid configuration.");
                 return;
                 }
-				lightmapQualityInjector = GetLightmapConfigInjector();
-
+				lightmapQualityInjector = GetLightmapQualityInjector();
 			}
+
+			// The reliable injector (tag-overwrite nopfills + the scenery-fix cave, applied via suspend +
+			// WriteProcessMemory). Reaches every worker regardless of instance count. Daisy-chains the
+			// (CreateRemoteThread) quality injector only when custom quality is used.
+			H2ToolLightmapFixInjector? injector = Profile.IsMCC ? GetInjector(args, useSceneryFix) : null;
+			if (injector is not null)
+				injector.DaisyChainedInjector = lightmapQualityInjector;
 
 			try
 			{
@@ -137,12 +199,7 @@ namespace OsoyoosLauncher.OsoyoosInterface
 						progress.MaxValue += 1 + args.instanceCount;
 
 
-					H2ToolLightmapFixInjector? injector = null;
                     Dictionary<int, Utility.Process.InjectionConfig> injectionState = new();
-                    if (Profile.IsMCC)
-                        injector = GetInjector(args);
-                    if (injector is not null)
-                        injector.DaisyChainedInjector = lightmapQualityInjector;
 
 
 					async Task RunInstance(int index)
@@ -197,12 +254,12 @@ namespace OsoyoosLauncher.OsoyoosInterface
 							Profile.ElevatedToExpert = true;
 
 							Utility.Process.InjectionConfig? config = null;
-                            if (injector is not null && index != 0)
+                            if (injector is not null)
                             {
                                 Trace.WriteLine($"Configuring injector (lm fix) for worker {index}");
                                 config = new(injector);
-                                injectionState[index] = config;
-
+                                if (index != 0)
+                                    injectionState[index] = config;
 							}
 
                             if (config is null && lightmapQualityInjector is not null)
@@ -278,7 +335,11 @@ namespace OsoyoosLauncher.OsoyoosInterface
 						progress.DisableCancellation();
 						progress.MaxValue += 1;
 					}
-					await RunTool((args.NoAssert && Profile.IsMCC) ? ToolType.ToolFast : ToolType.Tool, new() { "lightmaps", scenario, bsp, args.QualitySetting });
+					Utility.Process.InjectionConfig? singleConfig =
+						injector is not null ? new(injector)
+						: (lightmapQualityInjector is not null ? new(lightmapQualityInjector) : null);
+					await RunTool((args.NoAssert && Profile.IsMCC) ? ToolType.ToolFast : ToolType.Tool, new() { "lightmaps", scenario, bsp, args.QualitySetting },
+						injectionOptions: singleConfig);
 					if (progress is not null)
 						progress.Report(1);
 				}

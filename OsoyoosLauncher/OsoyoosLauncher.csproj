@@ -38,9 +38,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\LicenseInfoFull.txt" />
-    <EmbeddedResource Include="Resources\BultinProfiles.json" />
-    <EmbeddedResource Include="Resources\Documentation.json" />
+    <!-- LogicalName pins the manifest resource names to the legacy "ToolkitLauncher.*" ids the code loads
+         (BuiltinProfiles.cs / Documentation.cs). Without this the default RootNamespace ("OsoyoosLauncher")
+         produces "OsoyoosLauncher.Resources.*" and GetManifestResourceStream returns null -> startup crash. -->
+    <EmbeddedResource Include="Resources\LicenseInfoFull.txt"><LogicalName>ToolkitLauncher.LicenseInfoFull.txt</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Resources\BultinProfiles.json"><LogicalName>ToolkitLauncher.BultinProfiles.json</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Resources\Documentation.json"><LogicalName>ToolkitLauncher.Documentation.json</LogicalName></EmbeddedResource>
+    <!-- Self-contained H2 scenery-fix code cave (mapped image, based at 0x17B0000). Written into each lightmap
+         worker via suspend + VirtualAllocEx + WriteProcessMemory (reliable for all 32 instances). -->
+    <EmbeddedResource Include="Resources\objfix_cave.bin"><LogicalName>ToolkitLauncher.objfix_cave.bin</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Resources\objfix_cave.reloc"><LogicalName>ToolkitLauncher.objfix_cave.reloc</LogicalName></EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

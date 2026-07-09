@@ -22,3 +22,19 @@ GetProcAddrHelper/Release/*
 /Debug/*
 /Release/*
 /Build/*
+# out-of-tree native build artifacts (from manual MSVC compiles)
+H2ToolHooks/*.obj
+H2ToolHooks/*.dll
+H2ToolHooks/*.exp
+H2ToolHooks/*.lib
+H2ToolHooks/*.map
+GetProcAddrHelper/*.obj
+GetProcAddrHelper/*.exe
+GetProcAddrHelper/*.exp
+GetProcAddrHelper/*.lib
+GetProcAddrHelper/*.map
+*.pdb
+# local build helper scripts
+/build_all.bat
+/publish_all.bat
+**/build_msvc.bat

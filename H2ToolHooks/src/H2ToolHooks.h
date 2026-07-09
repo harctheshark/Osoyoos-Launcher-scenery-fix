@@ -13,7 +13,8 @@ namespace H2ToolHooks
 		None = 0,
 
 		DisableAsserts = 1 << 0,
-		PatchLightmapQuality = 1 << 1
+		PatchLightmapQuality = 1 << 1,
+		ApplyLightmapSceneryFix = 1 << 2
 	};
 	bool hook(HookFlags flags);
 }

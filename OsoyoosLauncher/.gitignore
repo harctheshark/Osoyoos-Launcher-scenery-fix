@@ -1,0 +1,5 @@
+
+# local backups of the embedded cave payload
+Resources/objfix_cave.bin.old2hook
+Resources/objfix_cave.bin.pre_zerobbox.bak
+Resources/objfix_cave.reloc.old2hook

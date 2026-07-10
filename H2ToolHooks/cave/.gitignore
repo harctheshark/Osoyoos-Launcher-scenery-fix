@@ -1,0 +1,8 @@
+# build artifacts (reproducible via build_cave.bat) — keep only the source (.cpp/.bat/.py)
+objfix_cave.dll
+objfix_cave.exp
+objfix_cave.lib
+objfix_cave.map
+objfix_cave.obj
+objfix_cave.bin
+objfix_cave.reloc

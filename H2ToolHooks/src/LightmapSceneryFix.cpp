@@ -67,7 +67,13 @@ extern "C" void __cdecl osoyoos_lm_decompress(uint32_t a2ptr)
 	float* bb = reinterpret_cast<float*>(sec + 48);
 	float hx = (bb[1] - bb[0]) * 0.5f, hy = (bb[3] - bb[2]) * 0.5f, hz = (bb[5] - bb[4]) * 0.5f;
 	float cx = (bb[1] + bb[0]) * 0.5f, cy = (bb[3] + bb[2]) * 0.5f, cz = (bb[5] + bb[4]) * 0.5f;
-	if (hx <= 0.001f || hy <= 0.001f || hz <= 0.001f || hx > 50.0f || hy > 50.0f || hz > 50.0f) return;
+	// ZERO/DEGENERATE-BBOX FIX: an all-~0 section bbox (e.g. concrete_chunk_a/h) or near-point (invisible_box1x2x2)
+	// means the render geometry occupies ~no space -> the correct occluder is negligible. Skipping these (old
+	// h<=0.001 test) left the raw [-1,1] verts = a full 2x2x2 PHANTOM occluder casting fake shadows across the map.
+	// Decompress them too: h~0 collapses the verts to a tiny/point cluster (zero-area tris the tracer ignores) ->
+	// no phantom shadow. Only reject a genuinely GARBAGE bbox (negative or absurdly large). Verified safe (geometry
+	// build + full photon cast complete, no crash) on earthcity_1.
+	if (hx < 0.0f || hy < 0.0f || hz < 0.0f || hx > 50.0f || hy > 50.0f || hz > 50.0f) return;
 	for (long i = 0; i < g_doneVbufN && i < 1024; i++) if (g_doneVbuf[i] == vb) return; // already decompressed
 	if (g_doneVbufN < 1024) g_doneVbuf[g_doneVbufN++] = vb;
 	for (int i = 0; i < vcount; i++) {

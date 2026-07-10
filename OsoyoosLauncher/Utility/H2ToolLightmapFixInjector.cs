@@ -34,7 +34,11 @@ namespace OsoyoosLauncher.Utility
 		//   RelocRVAs    = HIGHLOW base-relocation RVAs; only entries whose stored value lands inside the cave
 		//                  image are rebased (tool addresses baked into the cave are left untouched)
 		//   Jumps        = (tool entry to patch, cave hook RVA) — patched with a jmp to allocBase+hookRVA
-		public sealed record CavePayload(byte[] Image, uint PreferredBase, uint[] RelocRVAs, (uint patchVA, uint hookRVA)[] Jumps);
+		//   Jumps        = (tool entry to patch, cave hook RVA, stolen-prologue length) — the entry is overwritten
+		//                  with a 5-byte jmp to allocBase+hookRVA plus (stealLen-5) nops, so the stub replays exactly
+		//                  the stolen instructions. stealLen varies per hook (8 for most; 6 for sub_4A923A whose
+		//                  aligned prologue's next instruction begins at byte 6).
+		public sealed record CavePayload(byte[] Image, uint PreferredBase, uint[] RelocRVAs, (uint patchVA, uint hookRVA, uint stealLen)[] Jumps);
 
 		private readonly uint _baseAddress;
 		private readonly IEnumerable<NopFill> _nopfills;
@@ -166,13 +170,13 @@ namespace OsoyoosLauncher.Utility
 								fixed (byte* img = buf)
 									writeOk = PInvoke.WriteProcessMemory((HANDLE)process.Handle, remote, img, (nuint)buf.Length, null);
 
-								foreach ((uint patchVA, uint hookRVA) in _cave.Jumps)
+								foreach ((uint patchVA, uint hookRVA, uint stealLen) in _cave.Jumps)
 								{
 									uint target = allocBase + hookRVA;
-									byte[] patch = new byte[8];
+									byte[] patch = new byte[stealLen];
 									patch[0] = 0xE9; // jmp rel32
 									BitConverter.GetBytes((int)(target - (patchVA + 5))).CopyTo(patch, 1);
-									patch[5] = patch[6] = patch[7] = 0x90; // nop-pad the stolen bytes
+									for (uint bi = 5; bi < stealLen; bi++) patch[bi] = 0x90; // nop-pad remaining stolen bytes
 									IntPtr addr = IntPtr.Add(moduleBase, (int)(patchVA - _baseAddress));
 									fixed (byte* p = patch)
 										writeOk &= PInvoke.WriteProcessMemory((HANDLE)process.Handle, addr.ToPointer(), p, (nuint)patch.Length, null);

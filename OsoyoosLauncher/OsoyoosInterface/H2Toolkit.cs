@@ -95,7 +95,11 @@ namespace OsoyoosLauncher.OsoyoosInterface
                     image,
                     0x17B0000,                                              // link base of the cave image
                     rvas,
-                    new (uint, uint)[] { (0x49CF55u, 0x1010u), (0x49DA6Au, 0x1030u) }); // (tool entry, cave hook RVA)
+                    // (tool entry, cave stub RVA, stolen-prologue len). 3 hooks (RVAs from build_cave/extract_cave):
+                    new (uint, uint, uint)[] {
+                        (0x498962u, 0x1350u, 8u),   // scenery import -> capture placement scale
+                        (0x49CF55u, 0x1330u, 8u),   // occluder insert -> scenery-only gate
+                        (0x49DA6Au, 0x1300u, 8u) }); // add-vertex -> decompress + zero-bbox + per-INSTANCE occluder-matrix scale
             }
             return _sceneryCave;
         }

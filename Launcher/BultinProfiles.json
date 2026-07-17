@@ -1,0 +1,433 @@
+[
+    {
+        "ToolkitName": "H1EK",
+        "Description": "The original HEK release for Halo Custom Edition on PC.",
+        "GameGeneration": 1,
+        "Tool": {
+            "TLSH": "29F5BE47EB5100F2C89706BA205B577BEE325F08933E96C3BAE4780864B16F4557F68E",
+            "MD5": [
+                "1F18ECB6F0ACDCD0B0455AA4F7E06B73"
+            ]
+        },
+        "ToolFast": null,
+        "Guerilla": {
+            "TLSH": "0576CF22F69A42B1D86206BDD24F9B77CA374F14433DA6C3F2E06D0A26F15E1507E369",
+            "MD5": [
+                "FD86057ECDC707D9659BF683DB2FC8DF"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "6776BF42F69280B0CC8626B9119FA73BDA336B14932D52C3F6E43D0D65719E169BF3C9",
+            "MD5": [
+                "2A8529486E223DF039AE7464D94C39AC"
+            ]
+        },
+        "Standalone": null
+    },
+    {
+        "ToolkitName": "H1EK OS",
+        "Community": true,
+        "Description": "The original HEK release for Halo Custom Edition on PC with Open Sauce extensions.",
+        "GameGeneration": 1,
+        "Tool": {
+            "TLSH": "74F5BE47EB5100F2C89706BA205B577BEE325F08933E96C3BAE4780864B16F4557F68E",
+            "MD5": [
+                "F7474F0FBAFFB217BDD9B4790D31C255"
+            ]
+        },
+        "ToolFast": null,
+        "Guerilla": {
+            "TLSH": "6376CF22F69A42B1D86206BDD24F9B77CA374F14433DA6C3F2E06D0A26F15E1507E369",
+            "MD5": [
+                "350900E1163FAFDF70428850AA7478E5"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "A076BF42F69280B0CC8626B9119FA73BDA336B14932D52C3F6E43D0D65719E169BF3C9",
+            "MD5": [
+                "969F8F4D143FEA89488044802F156EF1"
+            ]
+        },
+        "Standalone": null
+    },
+    {
+        "ToolkitName": "H1AEK",
+        "Description": "The MCC Halo Combat Evolved Anniversary Toolset.",
+        "GameGeneration": 1,
+        "IsMCCBuild": true,
+        "Tool": {
+            "TLSH": "3476AD91BAA281F2DC4311B1706EBB7FAD36630847186ED3E3E4195CD4E05D069FF29A",
+            "MD5": [
+                "8e876344324648309e79ab0f5857fb69",
+                "21abf89742399ab2f5839feb69f6af94",
+                "39daaf08cd76f93d9c98f89c136ec9c6",
+                "CAFBEC6B05CB0A659F97B0084C29FA64",
+                "439e5452b85e622b16c5bd9c5bee3f0a"
+            ]
+        },
+        "ToolFast": null,
+        "Guerilla": {
+            "TLSH": "AA369D92BBE681B1DD472135705A773B8932A72C4B24BEC393E0196CC4F49D059FF29A",
+            "MD5": [
+                "b113bbf5cdcc48065dce2f1e20a7dc5d",
+                "344679513151e6840a0785f9f177045b",
+                "438f0279e87c4ecae44a36220dbb8c99",
+                "7C2857864AF87FA6F32EEC7EC74CC7B8",
+                "65322213b6fc9b1d20ece46299d65fe4"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "40769D91BBB2C2B1CC4721B0705ABB7BAD31B30C971A6DD3A3E5561CD4A49D01AFB14E",
+            "MD5": [
+                "f4628accadfc1d6068d4b2992d71de35",
+                "e7eca0ab6655441fce8f78e91766b675",
+                "172d956a08c93c8af94c02532388a497",
+                "81767AB17058F3802C9CB97CF996F307",
+                "0acb623c9ecc4761826906bcffb2e65b"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "F296BE81FA6381B1D98511B8706FBB7FD83B22049B2E19D3E7F8159FC4A05E225BF194",
+            "MD5": [
+                "9baa8cd92ca15b1e01e615f4522acbc6",
+                "00e69729807dfcb8bb0787b2c4f118f9",
+                "4f778f4cb3a0050cf44b6b5513e6d3aa",
+                "4D66960A5D5AD18CD4424477B432BCEE",
+                "dd42c8ff0a9132918c78da7379a6e074"
+            ]
+        }
+    },
+    {
+        "ToolkitName": "H2VEK",
+        "Description": "The original HEK release for Halo 2 Vista on PC.",
+        "GameGeneration": 2,
+        "Tool": {
+            "TLSH": "9966CF04FA93D1B2CC8562F5B0AA765B8731E706073446E3BBE52D4CE974AD02DF325A",
+            "MD5": [
+                "DC221CA8C917A1975D6B3DD035D2F862",
+                "3F58C70BBD47C64C8903033A7E3CA1CB",
+                "4EE1F890E3B85163642A4B18DE1EC00D"
+            ]
+        },
+        "ToolFast": null,
+        "Guerilla": {
+            "TLSH": "DD56BF00B693C0BAD98251B9B4EAB39BD330E7154B2456C3FBD02E5EAE74AD12DF3151",
+            "MD5": [
+                "CE3803CC90E260B3DC59854D89B3EA88",
+                "B95E4D600CFF0D3F3E4F790D54FAE23B",
+                "C54FAC6F99D8C37C71C0D8407B9029C9"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "9576BE00F693D0B1D896A1F8B0DEB29B9731E714473946D3BBE42A4DAD74AE02DF3245",
+            "MD5": [
+                "D86C488B7C8F64B86F90C732AF01BF50",
+                "FD6B5727EC66124E8F5E9CEDA3880AC8",
+                "B81F92A73496139F6A5BF72FF8221477"
+            ]
+        },
+        "Standalone": null
+    },
+    {
+        "ToolkitName": "H2VEK H2Codez",
+        "Description": "The original HEK release for Halo 2 Vista on PC with H2Codez extensions.",
+        "GameGeneration": 2,
+        "Community": true,
+        "Tool": {
+            "TLSH": "EE66CF04FA93D1B2CC8562F5B0AA765B8731E706073446E3BBE52D4CE974AD02DF325A",
+            "MD5": [
+                "F7474F0FBAFFB217BDD9B4790D31C255"
+            ]
+        },
+        "ToolFast": null,
+        "Guerilla": {
+            "TLSH": "EE56BF00B693C0BAD98251B9B4EAB39BD330E7154B2456C3FBD01E5EAE74AE12DF3151",
+            "MD5": [
+                "350900E1163FAFDF70428850AA7478E5"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "2276BE00F693D0B1D896A1F8B0DEB29B9731E714473946D3BBE42A4DAD74AE02DF3245",
+            "MD5": [
+                "969F8F4D143FEA89488044802F156EF1"
+            ]
+        },
+        "Standalone": null
+    },
+    {
+        "ToolkitName": "H2C EK",
+        "Description": "The MCC Halo 2 Anniversary Toolset.",
+        "GameGeneration": 2,
+        "IsMCCBuild": true,
+        "Tool": {
+            "TLSH": "73D68E12BD224062E74514B3727E2A2F14BA56A0C32DE0C7E7D4056D9DB89D32BB73B7",
+            "MD5": [
+                "c2011bb9b07a7325492d7a804bd939eb",
+                "c87653164366248921744f2aa9cdc82d",
+                "bf4caaa7a084fbc36119cd214a719f30",
+                "c31f8a48a0c342c24407a3ef2627f3ba"
+            ]
+        },
+        "ToolFast": {
+            "TLSH": "5B96CF41BAE3C0F3D5562130782AB71FEA31B9548B1886D3E3E41A1DE9F85E149FB2D1",
+            "MD5": [
+                "3a889d370a7be537af47ff8035acd201",
+                "8df7d90caacd84347d2315520a4ea40b",
+                "0b7ca8fc3742180baa7b5e0a317d942a",
+                "0d283f6a3c269dfe4bafb6595a41369c"
+            ]
+        },
+        "Guerilla": {
+            "TLSH": "AEC67C127C72E061EA561133767A2A7F68365260C73EE1C7D2D0215C95B89E33AB63F3",
+            "MD5": [
+                "442f9d57a1b09705cf2a5b3b9df5ba07",
+                "4832cd61527aa5efe193cd4a3c4d8cfa",
+                "b2594881f6b5c332737adc8f2a7e6bb0",
+                "f7d6c94552c98b6a6a2766541767e3ff"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "F2C68E137A668061E755313276AB262F14B79239D72DC0C7D2D0092CA57CAD32FB63BB",
+            "MD5": [
+                "e6619fc849782e5fd46f6851fb1c0c5a",
+                "cf14fb0a2a4cf7cb98cbf50c325b73aa",
+                "f284e3ecceb395bab088c24ae6cb0e64",
+                "1982ee8d314fa17bea0f41c03181f53b"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "3CC67C12BC628261EB5501736B7A266F7CB65270873ED0C7D3F0155C96B88D32AB63B3",
+            "MD5": [
+                "0076f99b796dd61092150bcff6c117f8",
+                "b93694b6732cc3776b5666d2e54d1940",
+                "dab10437f06a2a7365255efa3a1b2abe",
+                "820d41db2c4f8b04a21fae58e08c6a4a"
+            ]
+        }
+    },
+    {
+        "ToolkitName": "H3EK",
+        "Description": "The MCC Halo 3 Toolset.",
+        "GameGeneration": 3,
+        "IsMCCBuild": false,
+        "Tool": {
+            "TLSH": "E2579C5172B09CD8F06AC0389657A51BEBB17C754B310BEB62A0226D5F3FBE06D7A311",
+            "MD5": [
+                "81d58315733c65a9c848a5fcdd6544fe",
+                "87a525aaed6284d1bc0449f38e60ce0d",
+                "41ff9e13afea3a86a2c4f498e5853848",
+                "9fd954fe98f8bc335154a3be7b27efbf"
+            ]
+        },
+        "ToolFast": {
+            "TLSH": "5557AC5676B05CE8F036C0388696951BEBB17C768B214BDB62E0625D1F3FBE0697B301",
+            "MD5": [
+                "e9791dd41cf2208ee7c9e96ccd26b798",
+                "05aadb7c32df3a129ccb2e1dcf24290e",
+                "51b79fd39c3a7d62f7b473b009fafeab",
+                "ff6f84c70df8dc92efcf57816a264b97"
+            ]
+        },
+        "Guerilla": {
+            "TLSH": "AB37AD8573B090E9D06AD0388597A51BEBB07C618B314BCB52A073AD5F3BBE06D7B711",
+            "MD5": [
+                "e27108387484efb0100733e21d71adb2",
+                "2d4d018a2dda13c97ccc8fed1c049918",
+                "3e11fc80d78a8a9b46a095c5dac52e10",
+                "903e2e582b2a1472cf8c3be782b3b1a8"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "E847AD4172B094E9E0A6C038E957D90BEBB17C654B324BCB62A0235D5F3BBE06D7B711",
+            "MD5": [
+                "c2975efe62acd046b26e39f99367d850",
+                "16366406e92535724895178c1d87749a",
+                "a39d94bfbae3c54b76d01722abefa824",
+                "17ae798c46e944ce67605bae98cad354"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "D2579C4572609CD9F07BC0388697990BEBB178354B314BCB22A0629E5F3FBE16D7A711",
+            "MD5": [
+                "b41a64214beee8b53bdefa1cc5dea0d8",
+                "c5a7cf26f6e347151a8a5263a05bfc2b",
+                "9c70d0f85a79f696d025badf69ed0f71",
+                "6ed7bf3a552176b92a381d542f0bb186"
+            ]
+        }
+    },
+    {
+        "ToolkitName": "H3ODSTEK",
+        "Description": "The MCC Halo 3 ODST Toolset.",
+        "GameGeneration": 3,
+        "IsMCCBuild": true,
+        "Tool": {
+            "TLSH": "6A579D5272B09CD8F07AC0388556A51BEBB17C758B314BDB62A0266D1F3FBE0697B311",
+            "MD5": [
+                "16c2f4cc5c31d44aaf0a78b4d2a1c8f4",
+                "eb37d3f3c6364b20e18b301f03162cb2",
+                "71c98eb867e6bbeb5bab48595d52b8a6"
+            ]
+        },
+        "ToolFast": {
+            "TLSH": "1C57AD6672B06CD8F036C0388956951BEBB07C768B214BDB62E0635D1F3FBE0697A711",
+            "MD5": [
+                "df6a87c3acea829d82c6bd703cc61596",
+                "47769f5b6c2fe1a56c2799f93939b7d9",
+                "e3c29062fd107e3a954158b7fa136d6f"
+            ]
+        },
+        "Guerilla": {
+            "TLSH": "3D37AD9172B094D8E07AC039C957990BEBB07C614B314BCB62B0626E5F7BBE06D7B711",
+            "MD5": [
+                "7e4a6052f38a50c2ebcd948507b850fe",
+                "ab96b04f0d5050762ffd60ea00955439",
+                "39b2e2f7296781255dac8e8769322ad1"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "0F479D9572B098D8F066C0388956D90BEBB17C714B3147CB62A0239E5F3FBE16D7AB11",
+            "MD5": [
+                "aaf8a55af9e4b229dafef10a32de4882",
+                "d0b9c8a8a6374be4f305ed506a777104",
+                "632403c5e60fd5068147db362cb65df8"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "BC578C4632609CD8F02BD039C557A90BEBB178758B3157CB62A063AD1F3FBE1697A311",
+            "MD5": [
+                "48d7282c84eae4fb08e6abae02add916",
+                "1974d4ade7b73379eec9211c2fd8c60b",
+                "d03e27be51f15bb810e55a7acc86f73c"
+            ]
+        }
+    },
+    {
+        "ToolkitName": "HREK",
+        "Description": "The MCC Halo Reach Toolset.",
+        "GameGeneration": 4,
+        "IsMCCBuild": false,
+        "Tool": {
+            "TLSH": "B2A79C46726068DAF07BD038DA9A960BF7B178344B3047DB12A053AD5F3FBE0697A711",
+            "MD5": [
+                "df0dae3439bf56e699d6295afc967f97",
+                "6bf23f163a442e69a8906958f9830c6d",
+                "39747687a564b7827730618167e21775"
+            ]
+        },
+        "ToolFast": {
+            "TLSH": "8F779CA57270ACE8F06BD034891AD51BF7B17C754B2043DB62A4225E5F3F6E05A7E322",
+            "MD5": [
+                "52b035a85034eda9e6a1303aaae21bda",
+                "48390f02ec3ba72bd8a45373eb5b0265",
+                "d23386aae8f1714fc4ec2d4a2db0046c"
+            ]
+        },
+        "Guerilla": {
+            "TLSH": "45A329C173A1CD21C7BA2B3265B19F53077596C6B8A3833C41E464ABED32331CA257E6",
+            "MD5": [
+                "4680bce0ba3a078b163ffba44b33d74e",
+                "8f7cfbaa2e671063d0bf4079673a7146",
+                "66bd7153df10ebd9b5415ee04317647d"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "68978C563660ACE9F07BD078DA46960BF7B178354B2147CB12A053AE5F3FAE0593E312",
+            "MD5": [
+                "082b79c04d1cf3d1af6667df5193477a",
+                "d116ff90d4bbf08488fd6a18ca679c85",
+                "62d7ef3d080fedb70005d95a7af5ade5"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "70878C5672606CD9F07BD038D986960BF7B1B8314B2247CB52B4539E2F3FAE05A7A311",
+            "MD5": [
+                "ac0d055a9c0a4f0c730e735a30fdd2f3",
+                "4c38cb1186d7b9d6070593202560db8a",
+                "4469dfd8eca1fbf02b9d303fe8e5d324"
+            ]
+        }
+    },
+    {
+        "ToolkitName": "H4EK",
+        "Description": "The MCC Halo 4 Toolset.",
+        "GameGeneration": 4,
+        "IsMCCBuild": true,
+        "Tool": {
+            "TLSH": "77A79D5537B468EBF066C038C69A811BF7B2B9354B305BCB52A0076D9F3F7E1593A221",
+            "MD5": [
+                "39ec843af557bc7790ecf52eea3ae258",
+                "d47b6621c622db8bdbf35db1d8256ee6"
+            ]
+        },
+        "ToolFast": {
+            "TLSH": "7B978C9536B0ACDAF06AC075C46AD65BF7B278754B3047CB11A4026D6F3F2E05E7A322",
+            "MD5": [
+                "571ca0df51af42a79f59502cd9893c2a",
+                "531ca9ffd72be66bcc20a697340fb70b"
+            ]
+        },
+        "Guerilla": {
+            "TLSH": "12A35977E6A08724D5F98B3EA16081301B769F074C67DF1E45B8B0BC2E2670D0AAD776",
+            "MD5": [
+                "2eddd379411c82077683f68af9171e7d",
+                "283b48016e9a8bc513ba3b58e32faa67"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "2FA79C6576B1ACEAF0A6C038C696C51BF7B2B9354B305BCB11A4036D5F3F7E0593A221",
+            "MD5": [
+                "0478b0f4ab9ecfdb18e4e6aac58e0e3d",
+                "0cec1621a023a67039ceb5b3d1694ecd"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "33979C5536B1ACEAF066C039C696811BF7B2B9388B3157CB51A0026D9F3F7E09D7E211",
+            "MD5": [
+                "a73d2eb5bd10433ae6c332cf58fda695",
+                "da062c0ddbd64a73a95fed2906f55ba6"
+            ]
+        }
+    },
+    {
+        "ToolkitName": "H2AMPEK",
+        "Description": "The MCC Halo 2 Anniversary Multiplayer Toolset.",
+        "GameGeneration": 4,
+        "IsMCCBuild": true,
+        "Tool": {
+            "TLSH": "E5B7AD657BB4A4EBF0AAC038C696950BF7B279354B3057CB12A0036D9F3B7E0597E211",
+            "MD5": [
+                "a5c550240547b8d45b6a02660a650131",
+                "c0eb7d7eda7a854f17134ebfca56f4b8"
+            ]
+        },
+        "ToolFast": {
+            "TLSH": "12978C6536B0ADDAF06AC035D465951BF7B2B8754B3047CB12B0126EAF3F2E05E7A312",
+            "MD5": [
+                "3783bc660adefcfb90cb55c1b59345b8",
+                "29127e2c6fa62f16ef577876944afccf"
+            ]
+        },
+        "Guerilla": {
+            "TLSH": "33A34A8026504153F6AB0BFD6D238500DB725E56F426D6AC4BCC6CBDFDD270A8A507AF",
+            "MD5": [
+                "8638bca7902d822c7364113ed5cf2500",
+                "9c4798479c866d6e79223f8814881c25"
+            ]
+        },
+        "Sapien": {
+            "TLSH": "8CA79D5576B1ACEAF0A6D038C696810BF7B2B9344B3057CB51A0076E9F3F7E09D7A211",
+            "MD5": [
+                "2d6aed59f52db4f7d704580ed9fefc9d",
+                "4e2e6d84fcc4e62eaa1f4a65ab815768"
+            ]
+        },
+        "Standalone": {
+            "TLSH": "D9979D6536B0ACEAF066C039C696811BF7B2B9344B305BCB51A0066D5F3F7E19E3E215",
+            "MD5": [
+                "dd117bf10159abcddfd86595883285e7",
+                "f08cb25deff2fba439a89f53afd2b013"
+            ]
+        }
+    }
+]

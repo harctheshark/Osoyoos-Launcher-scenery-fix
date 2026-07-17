@@ -1,0 +1,55 @@
+{
+  "UrlBase": "https://c20.reclaimers.net/",
+  "Tookits": {
+    "_base": {
+      "RunPrograms": "general/community-tools/osoyoos/#run-programs-group",
+      "Tasks": "general/community-tools/osoyoos/#tasks-group",
+      "Settings": "general/community-tools/osoyoos/#settings-group",
+      "General": "general/community-tools/osoyoos/"
+    },
+    "H1": {
+      "Lighting": "h1/h1-ek/h1-tool/#lightmaps",
+      "Packaging": "h1/h1-ek/h1-tool/#build-cache-file",
+      "Phantom": "h1/h1-ek/h1-tool/#phantom-bsp-fix",
+      "H2LOD": "h1/h1-ek/h1-tool/#halo-2-lod-selection-logic"
+    },
+    "H1CE": {
+      "Base": "H1"
+    },
+    "H1MCC": {
+      "Base": "H1"
+
+    },
+    "H2": {
+
+    },
+    "H2V": {
+      "Base": "H2"
+    },
+    "H2Codez": {
+      "Base": "H2V"
+    },
+    "H2MCC": {
+      "Base": "H2",
+      "Lighting": "h2/tools/h2-ek/h2-tool/#baking-lightmaps",
+      "MultiInstance": "h2/tools/h2-ek/h2-tool/#multi-instance-lightmaps",
+      "Packaging": "h2/tools/h2-ek/h2-tool/#build-cache-file"
+    },
+    "H3": {
+      "Packaging": "h3/h3-ek/h3-tool/#build-cache-file",
+      "Lighting": "h3/h3-ek/h3-tool/#baking-lightmaps-faux",
+      "MultiInstance": "h3/h3-ek/h3-tool/#baking-lightmaps-faux"
+    },
+    "HR": {
+      "Packaging": "hr/hr-ek/hr-tool/#build-cache-file-cache",
+      "Lighting": "hr/hr-ek/hr-tool/#baking-lightmaps-faux",
+      "MultiInstance": "hr/hr-ek/hr-tool/#baking-lightmaps-faux"
+    },
+    "H4": {
+
+    },
+    "H2A": {
+      "Base": "H4"
+    }
+  }
+}

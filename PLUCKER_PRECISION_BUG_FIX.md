@@ -55,6 +55,30 @@ from the complete six-hook build.
 See [R7_EXTRA_PRECISION_HOOKS.md](R7_EXTRA_PRECISION_HOOKS.md) for the detailed
 contribution, ranking, and isolation order of the five supporting hooks.
 
+### The launcher now installs the fast path by default
+
+The two most expensive supporting hooks — the full FP64 leaf test (`0x4B4507`)
+and the full FP64 traversal (`0x4B2DD4`) — run per ray inside the final-gather
+("computing ii entries") phase, which is ~80% of bake time. In side-by-side bakes
+they produced **no visually observable change** in the lightmap once the producer
+repair (`sub_49C09C`) was present; they only slowed the bake down. They are, in
+practice, redundant.
+
+The launcher therefore now always installs the **fast path**:
+
+- `sub_49C09C` — the root edge-coefficient producer (the actual fix), and
+- a cheap per-ray FP64 Plücker-moment recompute at `0x4B2F27` that stores the six
+  corrected moment values back as FP32 and lets the stock (fast) traversal/leaf
+  consume them.
+
+The stock FP32 traversal and leaf run unchanged, so the bake runs at near-stock
+speed while still consuming corrected edge data. The complete six-hook path is
+still present in `LightmapPrecisionFix.cpp` (selected by the
+`ApplyLightmapPrecisionFixFast` flag / `LIGHTMAP_PRECISION_FIX_FAST` variable) but
+is no longer wired to any launcher control; the two modes are mutually exclusive.
+To bring the full path back as an option, re-add a profile setting and gate
+`usePrecisionFast` on it in `H2Toolkit.cs`.
+
 ## What was broken
 
 Each BSP edge is defined by two FP32 positions, `p0` and `p1`. The ray tracer
@@ -208,9 +232,15 @@ the scenery fix, and any custom-quality patch together (no injection-slot
 conflict). Implementation notes:
 
 - **Source:** `H2ToolHooks/LightmapPrecisionFix.cpp` (the R7 six-hook
-  implementation; `DllMain` replaced by `apply_lightmap_precision_fix()`, invoked
-  from `H2ToolHooks::hook()` when the flag is set). Built `/fp:strict` without LTCG
-  to reproduce R7's codegen.
+  implementation; `DllMain` replaced by `apply_lightmap_precision_fix(bool fast)`,
+  invoked from `H2ToolHooks::hook()` when the flag is set). Built `/fp:strict`
+  without LTCG to reproduce R7's codegen.
+- **Fast path (default):** the launcher always pairs `LIGHTMAP_PRECISION_FIX` with
+  `LIGHTMAP_PRECISION_FIX_FAST`, so `apply_lightmap_precision_fix(true)` installs
+  only the root producer plus the cheap `0x4B2F27` moment recompute and skips the
+  expensive per-ray FP64 leaf/traversal hooks. See *Patch scope* above for why the
+  skipped hooks are redundant. The full six-hook path remains in the DLL, gated on
+  the flag, for future use.
 - **Signature gating:** every hook verifies its target's entry bytes before
   patching, so injection into any binary that is not stock MCC `tool_fast` (H2V
   `H2Tool`, byte-patched tools) is a safe no-op.

@@ -16,6 +16,7 @@ namespace H2ToolHooks
 		PatchLightmapQuality = 1 << 1,
 		ApplyLightmapSceneryFix = 1 << 2,
 		ApplyLightmapPrecisionFix = 1 << 3,
+		ApplyLightmapPrecisionFixFast = 1 << 4,
 	};
 	bool hook(HookFlags flags);
 }

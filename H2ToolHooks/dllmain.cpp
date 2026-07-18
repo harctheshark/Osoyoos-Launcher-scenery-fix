@@ -70,6 +70,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
             flags |= H2ToolHooks::HookFlags::ApplyLightmapSceneryFix;
         if (is_launcher_variable_set("LIGHTMAP_PRECISION_FIX"))
             flags |= H2ToolHooks::HookFlags::ApplyLightmapPrecisionFix;
+        if (is_launcher_variable_set("LIGHTMAP_PRECISION_FIX_FAST"))
+            flags |= H2ToolHooks::HookFlags::ApplyLightmapPrecisionFixFast;
 
         if (flags == 0 && !is_launcher_variable_set("EVENT"))
         {

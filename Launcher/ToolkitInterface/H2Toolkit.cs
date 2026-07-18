@@ -53,7 +53,7 @@ namespace ToolkitLauncher.ToolkitInterface
             await RunTool(ToolType.Tool, new List<string>() { "build-cache-file", scenario.Replace(".scenario", "") });
         }
 
-        static private DLLInjector GetLightmapHooksInjector(bool patchQuality, bool sceneryFix, bool precisionFix)
+        static private DLLInjector GetLightmapHooksInjector(bool patchQuality, bool sceneryFix, bool precisionFix, bool precisionFast)
         {
 			void ModifyEnviroment(IDictionary<string, string?> Enviroment)
 			{
@@ -63,6 +63,8 @@ namespace ToolkitLauncher.ToolkitInterface
 					Enviroment[DLLInjector.GetVariableName("LIGHTMAP_SCENERY_FIX")] = "1";
 				if (precisionFix)
 					Enviroment[DLLInjector.GetVariableName("LIGHTMAP_PRECISION_FIX")] = "1";
+				if (precisionFix && precisionFast)
+					Enviroment[DLLInjector.GetVariableName("LIGHTMAP_PRECISION_FIX_FAST")] = "1";
 			}
 
             return new(Resources.H2ToolHooks, "h2.patch.lightmap-hooks.dll", ModifyEnviroment, earlyInjection: true);
@@ -128,6 +130,13 @@ namespace ToolkitLauncher.ToolkitInterface
 			// The precision fix is MCC-only (the FP64 Plucker/leaf/moment hooks target stock tool_fast
 			// addresses; the DLL signature-gates each hook so it is a safe no-op on any other binary).
 			bool usePrecisionFix = Profile.H2LightmapPrecisionFix && Profile.IsMCC;
+			// The precision fix now ALWAYS runs the fast path: the root edge-coefficient producer
+			// (sub_49C09C) is the actual fix, plus a cheap per-ray FP64 moment recompute. The full path
+			// additionally installs the per-ray FP64 leaf/traversal hooks, but those dominate the
+			// final-gather ("computing ii entries") runtime with no visually observable change to the
+			// lightmap, so they are redundant and disabled for now. To restore the optional full path, gate
+			// this on a profile setting again (e.g. `&& !Profile.H2LightmapPrecisionFull`) and re-add its checkbox.
+			bool usePrecisionFast = usePrecisionFix;
 			if (useCustomQuality || useSceneryFix || usePrecisionFix)
 			{
 				// The lightmap fixes inject a DLL into tool_fast and must do so BEFORE the lightmapper runs.
@@ -145,7 +154,7 @@ namespace ToolkitLauncher.ToolkitInterface
 				// Single H2ToolHooks injection carrying whichever flags are needed (never double-injected).
 				// The scenery/precision patches set NO tag-save nopfill, so adding them to any process (incl.
 				// single/worker-0/merge) cannot affect stock's tag-save behavior.
-				lightmapHooksInjector = GetLightmapHooksInjector(useCustomQuality, useSceneryFix, usePrecisionFix);
+				lightmapHooksInjector = GetLightmapHooksInjector(useCustomQuality, useSceneryFix, usePrecisionFix, usePrecisionFast);
 
 			}
 

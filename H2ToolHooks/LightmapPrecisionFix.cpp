@@ -2554,13 +2554,85 @@ bool install_photon_search_hooks()
     }
     return true;
 }
+
+// ---- FAST-mode ray Plücker moment hook (0x4B2F27) --------------------------------------------------------
+// Fast mode installs ONLY the root edge-coefficient producer (sub_49C09C) plus this cheap per-ray moment
+// recompute. It rebuilds the six ray Plücker moment values in double and stores them back as FP32, then lets
+// the stock (fast, FP32) traversal + leaf run unchanged. This avoids the expensive per-ray / per-triangle
+// FP64 leaf and full-traversal replacements (the ~80% hot path) while keeping the corrected edge data plus a
+// double-precision ray moment. In FULL mode the whole traversal sub_4B2DD4 is replaced at its entry, so this
+// mid-function site never executes -- the two modes are mutually exclusive.
+//
+// The trampoline is the proven raw machine-code stub (capstone-verified): save state + xmm0-7, call the C
+// helper to write the six doubles-as-floats into the original frame's moment array, restore, resume at
+// 0x4B2F2D. The single relative call (operand at offset 64) is fixed up to fast_moment_compute at install.
+void __cdecl fast_moment_compute(const float* ray, float* out)
+{
+    const double ox = ray[0], oy = ray[1], oz = ray[2];
+    const double dx = ray[3], dy = ray[4], dz = ray[5];
+    const double dist = ray[7];
+    const double ex = dx * dist + ox;
+    const double ey = dy * dist + oy;
+    const double ez = dz * dist + oz;
+    out[0] = static_cast<float>(ey * ox - oy * ex);
+    out[1] = static_cast<float>(ez * ox - oz * ex);
+    out[2] = static_cast<float>(ox - ex);
+    out[3] = static_cast<float>(ez * oy - oz * ey);
+    out[4] = static_cast<float>(oz - ez);
+    out[5] = static_cast<float>(ey - oy);
+}
+
+std::uint8_t g_fast_moment_stub[124] = {
+    0x60,0x9C,0x81,0xEC,0x80,0x00,0x00,0x00,0x0F,0x11,0x04,0x24,0x0F,0x11,0x4C,0x24,0x10,0x0F,0x11,0x54,
+    0x24,0x20,0x0F,0x11,0x5C,0x24,0x30,0x0F,0x11,0x64,0x24,0x40,0x0F,0x11,0x6C,0x24,0x50,0x0F,0x11,0x74,
+    0x24,0x60,0x0F,0x11,0x7C,0x24,0x70,0x8D,0x84,0x24,0xF4,0x00,0x00,0x00,0x8B,0x8C,0x24,0x9C,0x00,0x00,
+    0x00,0x50,0x51,0xE8,0xBC,0xFF,0xFF,0xFF,0x83,0xC4,0x08,0x0F,0x10,0x04,0x24,0x0F,0x10,0x4C,0x24,0x10,
+    0x0F,0x10,0x54,0x24,0x20,0x0F,0x10,0x5C,0x24,0x30,0x0F,0x10,0x64,0x24,0x40,0x0F,0x10,0x6C,0x24,0x50,
+    0x0F,0x10,0x74,0x24,0x60,0x0F,0x10,0x7C,0x24,0x70,0x81,0xC4,0x80,0x00,0x00,0x00,0x9D,0x61,0x68,0x2D,
+    0x2F,0x4B,0x00,0xC3};
+constexpr std::size_t kFastMomentCallOffset = 64;
+
+bool install_fast_moment_hook()
+{
+    static const std::uint8_t expected_moment[] = {0xF3, 0x0F, 0x11, 0x44, 0x24, 0x60}; // movss [esp+60h],xmm0
+    auto* target = reinterpret_cast<std::uint8_t*>(g_exe_base + (0x004B2F27u - kImageBase));
+    if (std::memcmp(target, expected_moment, sizeof(expected_moment)) != 0)
+    {
+        append_log("FAST_MOMENT_VERIFY_FAILED", "target=0x%08lX",
+            static_cast<DWORD>(reinterpret_cast<std::uintptr_t>(target)));
+        return false;
+    }
+
+    auto* stub = static_cast<std::uint8_t*>(
+        VirtualAlloc(nullptr, sizeof(g_fast_moment_stub), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
+    if (!stub)
+        return false;
+    std::memcpy(stub, g_fast_moment_stub, sizeof(g_fast_moment_stub));
+    const std::int32_t call_rel = static_cast<std::int32_t>(
+        reinterpret_cast<std::uint8_t*>(&fast_moment_compute) - (stub + kFastMomentCallOffset + 4));
+    std::memcpy(stub + kFastMomentCallOffset, &call_rel, sizeof(call_rel));
+    FlushInstructionCache(GetCurrentProcess(), stub, sizeof(g_fast_moment_stub));
+
+    DWORD old_protection = 0;
+    if (!VirtualProtect(target, 6, PAGE_EXECUTE_READWRITE, &old_protection))
+        return false;
+    target[0] = 0xE9;
+    const std::int32_t rel = static_cast<std::int32_t>(stub - (target + 5));
+    std::memcpy(target + 1, &rel, sizeof(rel));
+    target[5] = 0x90;
+    FlushInstructionCache(GetCurrentProcess(), target, 6);
+    DWORD ignored = 0;
+    VirtualProtect(target, 6, old_protection, &ignored);
+    append_log("FAST_MOMENT_INSTALLED", "target=0x004B2F27 continue=0x004B2F2D");
+    return true;
+}
 } // namespace
 
 // Entry point invoked from H2ToolHooks::hook() when the LIGHTMAP_PRECISION_FIX flag is set. Installs the
 // complete R7 six-hook FP64 precision path. Signature-gated on the edge-builder prologue so it is a safe
 // no-op on any binary that is not stock MCC tool_fast (H2V H2Tool, byte-patched tool_fast, etc.). Logging
 // is left disabled (initialize_logger is intentionally not called), so append_log() early-returns.
-bool apply_lightmap_precision_fix()
+bool apply_lightmap_precision_fix(bool fast)
 {
     g_exe_base = reinterpret_cast<std::uintptr_t>(GetModuleHandleW(nullptr));
     if (g_exe_base == 0)
@@ -2576,16 +2648,37 @@ bool apply_lightmap_precision_fix()
         return true;
     }
 
-    // Order matches R7's DllMain: producers, then trace/leaf pair (widened FP64 packet), then the root
-    // edge-coefficient producer. Each install function signature-verifies its own target before writing.
+    // The root edge-coefficient producer (sub_49C09C) is installed in BOTH modes -- it is the fix and it is
+    // cheap (build-time, once per edge).
+    const bool surface_edge_hook_installed = install_surface_edge_builder_hook();
+
+    if (fast)
+    {
+        // FAST mode: root producer + cheap per-ray moment recompute only. Skips the expensive per-ray FP64
+        // leaf (0x4B4507) and full traversal (0x4B2DD4) replacements that dominate the "computing ii entries"
+        // final-gather phase; the stock FP32 traversal/leaf run instead, consuming the corrected edge data.
+        const bool moment_installed = install_fast_moment_hook();
+        char fmsg[160];
+        _snprintf_s(fmsg, sizeof(fmsg), _TRUNCATE,
+            "[LM PRECISION R7] FAST installed=%s (edge=%s moment=%s) edge=0x%08lX moment=0x004B2F27\n",
+            surface_edge_hook_installed ? "true" : "false",
+            surface_edge_hook_installed ? "true" : "false",
+            moment_installed ? "true" : "false",
+            static_cast<DWORD>(g_exe_base + kSurfaceEdgeBuilderRva));
+        OutputDebugStringA(fmsg);
+        g_hook_installed = surface_edge_hook_installed;
+        return g_hook_installed;
+    }
+
+    // FULL mode. Order matches R7's DllMain: producers, then trace/leaf pair (widened FP64 packet), then the
+    // root edge-coefficient producer (already installed above). Each install signature-verifies its target.
     const bool producer_hooks_installed = install_input_producer_hooks();
     const bool trace_hooks_installed = install_fp64_trace_and_leaf_hooks();
-    const bool surface_edge_hook_installed = install_surface_edge_builder_hook();
     g_hook_installed = producer_hooks_installed && trace_hooks_installed && surface_edge_hook_installed;
 
-    char msg[192];
+    char msg[224];
     _snprintf_s(msg, sizeof(msg), _TRUNCATE,
-        "[LM PRECISION R7] installed=%s (producers=%s trace/leaf=%s edge=%s) targets "
+        "[LM PRECISION R7] FULL installed=%s (producers=%s trace/leaf=%s edge=%s) targets "
         "edge=0x%08lX interp=0x%08lX finalbias=0x%08lX clvbias=0x%08lX trace=0x%08lX leaf=0x%08lX\n",
         g_hook_installed ? "true" : "false",
         producer_hooks_installed ? "true" : "false",

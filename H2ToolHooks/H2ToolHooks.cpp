@@ -17,7 +17,9 @@ bool apply_lightmap_scenery_fix();
 
 // Defined in LightmapPrecisionFix.cpp: FP64 Plucker edge/leaf/ray-moment fix for MCC tool_fast (removes the
 // translation-dependent bright lightmap splotch far from origin). Signature-gated; safe no-op on any other binary.
-bool apply_lightmap_precision_fix();
+// fast=true installs only the root edge-coefficient producer + a cheap per-ray moment recompute (skips the
+// expensive per-ray FP64 leaf/traversal); fast=false installs the complete six-hook path.
+bool apply_lightmap_precision_fix(bool fast);
 
 static bool disable_assertions(const PatternScanner &scanner)
 {
@@ -169,7 +171,9 @@ bool H2ToolHooks::hook(HookFlags flags)
 	if (flags & HookFlags::ApplyLightmapPrecisionFix)
 	{
 		// FP64 Plucker/leaf/moment precision fix (MCC tool_fast only, signature-gated).
-		success = apply_lightmap_precision_fix() && success;
+		// Fast mode = root edge producer + cheap moment only (skips the expensive per-ray FP64 hooks).
+		const bool fast = (flags & HookFlags::ApplyLightmapPrecisionFixFast) != 0;
+		success = apply_lightmap_precision_fix(fast) && success;
 	}
 
 	return success;

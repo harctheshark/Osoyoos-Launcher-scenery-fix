@@ -11,9 +11,12 @@
  oversized/offset/blobby-black shadows AND wrong per-vertex colors. Fix = decompress the (shared) normalized
  vertex buffer in place (world = h*vNorm + c), gated to scenery only so BSP / instanced-geo / rmdl are untouched.
 
- Two hooks on the STOCK tool_fast.exe (no-ASLR, ImageBase 0x400000):
+ Three hooks on the STOCK tool_fast.exe (no-ASLR, ImageBase 0x400000):
    sub_49CF55 (occluder insert)  -> scenery gate: track caller so only scenery inserts decompress
    sub_49DA6A (add vertex)       -> decompress the vertex buffer in place, once per vbuf
+   sub_499603 (surf-light collect) -> decompress the scenery emissive vbuf BEFORE the surface light reads it
+                                      (it's collected under build_lights, before the occluder decompress runs,
+                                      so emissive lights would otherwise bake ~2u too low); scenery call site only
 
  Clang-cl has no MSVC __asm/naked support, so the detour stubs are built as raw machine code at runtime and the
  hook logic lives in plain C handlers.
@@ -297,6 +300,18 @@ namespace {
 	constexpr uint32_t kBack_49CF5D   = 0x49CF5D;   // sub_49CF55 + 8 (after stolen prologue)
 	constexpr uint32_t kBack_49DA72   = 0x49DA72;   // sub_49DA6A + 8
 
+	// Emissive surface-light POSITION fix. Emissive materials on scenery become "surface lights" (photon
+	// emitters) whose verts are collected by sub_499603 -- but that runs under build_lights, BEFORE
+	// process_scenery_object decompresses the vbuf, so the emitter is built from the still-compressed [-1,1]
+	// verts and bakes ~2u too low (its true height collapses toward the object origin). Fix: decompress the
+	// scenery vbuf at sub_499603 entry, before the light reads it, sharing g_doneVbuf so the later occluder
+	// decompress is a no-op. SCENERY-ONLY: sub_499603 also serves BSP (world-space) and instanced-geo/rmdl
+	// (also normalized!), so we gate strictly on the one SCENERY call site (build_scenario_light @0x4995EC).
+	// SEH prologue (6A 60 / B8 imm32 / E8 call): steal 7, resume at the E8 __EH_prolog3 call (+7).
+	constexpr uint32_t kSub_499603    = 0x499603;   // surface-light collect
+	constexpr uint32_t kBack_49960A   = 0x49960A;   // sub_499603 + 7 (the E8 __EH_prolog3 call)
+	constexpr uint32_t kSceneryCollectRet = 0x4995EC; // build_scenario_light call site -> SCENERY (the ONLY one we touch)
+
 	// --- state ---
 	long g_sceneryActive = 0;
 	long g_doneVbufN = 0;
@@ -370,6 +385,49 @@ extern "C" void __cdecl osoyoos_lm_decompress(uint32_t a2ptr)
 	// the tracer ignores -> no phantom 2x2x2 shadow). Only reject a genuinely GARBAGE bbox.
 	if (hx < 0.0f || hy < 0.0f || hz < 0.0f || hx > 50.0f || hy > 50.0f || hz > 50.0f) return;
 	for (int i = 0; i < vcount; i++) {
+		float* v = reinterpret_cast<float*>(vb + 196 * i);
+		v[0] = hx * v[0] + cx; v[1] = hy * v[1] + cy; v[2] = hz * v[2] + cz;
+	}
+}
+
+// Emissive surface-light decompress. Runs at sub_499603 entry (a1 = ecx = the mesh struct, same layout as the
+// occluder path: a1[0]=parts, a1[1]=section, a1[9]=vcount @+36, a1[10]=vbuf @+40 (196 B/vert, pos@+0),
+// a1[12]=striptot @+48). retaddr identifies the collector. sub_499603 also builds BSP (world-space) and
+// instanced-geo/rmdl surface lights (also compression-normalized), so we gate STRICTLY on the scenery call
+// site (build_scenario_light @0x4995EC) -- decompressing anything else would corrupt it. Decompresses the
+// scenery vbuf in place with the same DB/sec+48 bound as the occluder, marking g_doneVbuf so the later
+// occluder decompress (sub_49DA6A) skips it (no double-apply). Normals are left alone.
+extern "C" void __cdecl osoyoos_lm_decompress_emissive(uint32_t a1, uint32_t retaddr)
+{
+	if (retaddr != kSceneryCollectRet) return;                        // scenery collector only
+	if (a1 < 0x400000 || a1 >= 0x40000000 || IsBadReadPtr(reinterpret_cast<void*>(a1), 0x40)) return;
+	uint32_t* s = reinterpret_cast<uint32_t*>(a1);
+	int vcount = static_cast<int>(s[9]);
+	uint32_t vb = s[10];
+	if (vb < 0x400000 || vb >= 0x40000000 || vcount <= 0 || vcount > 200000 || IsBadReadPtr(reinterpret_cast<void*>(vb), 12)) return;
+	float* v0 = reinterpret_cast<float*>(vb);
+	if (v0[0] < -1.5f || v0[0] > 1.5f || v0[1] < -1.5f || v0[1] > 1.5f || v0[2] < -1.5f || v0[2] > 1.5f) return; // normalized only
+	for (long i = 0; i < g_doneVbufN && i < 1024; i++) if (g_doneVbuf[i] == vb) return; // already decompressed by either hook
+
+	load_bounds_db("MCC");
+	uint32_t sec = s[1];
+	int parts = static_cast<int>(s[0]);
+	uint32_t striptot = s[12];
+	const float* bb = nullptr;
+	if (parts >= 1 && parts <= 128)
+	{
+		const BoundsRec* r = mcc_db_lookup(vcount, parts, striptot);   // model-wide compression bound
+		if (r) bb = r->b;
+	}
+	if (!bb && sec >= 0x400000 && sec < 0x40000000 && !IsBadReadPtr(reinterpret_cast<void*>(sec + 48), 24))
+		bb = reinterpret_cast<float*>(sec + 48);                       // sec+48 fallback (matches occluder)
+	if (!bb) return;
+	float hx = (bb[1] - bb[0]) * 0.5f, hy = (bb[3] - bb[2]) * 0.5f, hz = (bb[5] - bb[4]) * 0.5f;
+	float cx = (bb[1] + bb[0]) * 0.5f, cy = (bb[3] + bb[2]) * 0.5f, cz = (bb[5] + bb[4]) * 0.5f;
+	if (hx < 0.0f || hy < 0.0f || hz < 0.0f || hx > 50.0f || hy > 50.0f || hz > 50.0f) return;
+	if (g_doneVbufN < 1024) g_doneVbuf[g_doneVbufN++] = vb;            // mark so the occluder decompress skips
+	for (int i = 0; i < vcount; i++)
+	{
 		float* v = reinterpret_cast<float*>(vb + 196 * i);
 		v[0] = hx * v[0] + cx; v[1] = hy * v[1] + cy; v[2] = hz * v[2] + cz;
 	}
@@ -517,7 +575,24 @@ static bool apply_scenery_fix_mcc()
 	WriteJmp(static_cast<size_t>(kSub_49DA6A), reinterpret_cast<size_t>(da6a_stub));
 	NopFill(static_cast<size_t>(kSub_49DA6A) + 5, 3);
 
-	DebugPrintf("MCC scenery fix applied (scenery gate @0x%X, decompress @0x%X, scale respect + bounds DB)", kSub_49CF55, kSub_49DA6A);
+	// Emissive surface-light fix: decompress the scenery vbuf at the surface-light collection entry (sub_499603),
+	// gated to the scenery call site inside the handler. handler(a1=ecx, retaddr=orig[esp]): after pushad+pushfd
+	// ecx is at [esp+0x20] (post the extra retaddr push) and retaddr at [esp+0x24]. SEH prologue -> steal 7,
+	// resume at the E8 __EH_prolog3 call.
+	static const uint8_t stolen_col[7] = { 0x6A, 0x60, 0xB8, 0xB2, 0x25, 0x9A, 0x00 };
+	if (memcmp(reinterpret_cast<void*>(kSub_499603), stolen_col, sizeof(stolen_col)) == 0)
+	{
+		void* col_stub = build_stub2(0x24, 0x20, reinterpret_cast<void*>(&osoyoos_lm_decompress_emissive),
+			stolen_col, sizeof(stolen_col), kBack_49960A);
+		if (col_stub)
+		{
+			WriteJmp(static_cast<size_t>(kSub_499603), reinterpret_cast<size_t>(col_stub));
+			NopFill(static_cast<size_t>(kSub_499603) + 5, 2);
+		}
+	}
+	else DebugPrintf("MCC emissive decompress: prologue mismatch @0x%X, skipping", kSub_499603);
+
+	DebugPrintf("MCC scenery fix applied (scenery gate @0x%X, decompress @0x%X, emissive @0x%X, scale respect + bounds DB)", kSub_49CF55, kSub_49DA6A, kSub_499603);
 	return true;
 }
 
